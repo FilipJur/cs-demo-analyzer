@@ -264,3 +264,116 @@ class HealthResponse(Model):
     data_root: str
     worker_running: bool
     free_bytes: int
+
+class AnalyticState(Model):
+    row_ordinal: int
+    tick: int
+    player_id: str | None
+    x: float | None
+    y: float | None
+    z: float | None
+    yaw: float | None
+    pitch: float | None
+    velocity_x: float | None
+    velocity_y: float | None
+    velocity_z: float | None
+    health: int | None
+    armor: int | None
+    money: int | None
+    side: str
+    active_weapon: str | None
+    has_bomb: bool | None
+    is_crouched: bool | None
+    is_scoped: bool | None
+    is_reloading: bool | None
+
+
+class StateResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    tick_rate_hz: float
+    requested_tick: int
+    actual_tick: int | None
+    gap_ticks: int | None = None
+    exact: bool
+    states: list[AnalyticState]
+
+
+class TrajectoryResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    tick_rate_hz: float
+    player_id: str
+    start_tick: int
+    end_tick: int
+    stride: int
+    sample_count: int
+    missing_ranges: list[list[int]]
+    states: list[AnalyticState]
+
+
+class TimelineEvent(Model):
+    dataset: str
+    row_ordinal: int
+    tick: int
+    actor1: str | None = None
+    actor2: str | None = None
+    detail: str | None = None
+
+
+class EventsResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    start_tick: int
+    end_tick: int
+    event_count: int
+    events: list[TimelineEvent]
+
+
+class EventWindowResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    tick_rate_hz: float
+    event: TimelineEvent
+    states: list[AnalyticState]
+    nearby_events: list[TimelineEvent]
+
+
+class IdentityCoverage(Model):
+    total_observations: int
+    identified: int
+    null_observations: int
+    alive_total: int
+    alive_identified: int
+    alive_null: int
+    live_coverage: float | None = None
+    notes: list[str] = Field(default_factory=list)
+
+
+class CoverageResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    scope: str
+    coverage: IdentityCoverage
+
+
+class DistanceResponse(Model):
+    generation_id: str
+    schema_version: int = SCHEMA_VERSION
+    tick: int
+    player_a: str
+    player_b: str
+    distance_2d: float | None = None
+    distance_3d: float | None = None
+    missing: bool = False
+
+
+class EvidenceRef(Model):
+    demo_id: str
+    generation_id: str
+    profile_key: str
+    dataset: str
+    row_ordinal: int
+    tick: int
+    round_id: int | None = None
+    player_ids: list[str] = Field(default_factory=list)

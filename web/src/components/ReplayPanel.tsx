@@ -6,6 +6,7 @@ import { actorAt, actorLabel, buildTracks, medianZ, parseLevels, pickLevelForZ, 
 import { useRafClock } from '../lib/useRafClock';
 import { usePolled } from '../lib/usePolling';
 import { useReplay } from '../lib/useReplay';
+import { Inspector } from './Inspector';
 import { ErrorNotice, WarningList } from './Notices';
 import { RadarCanvas, type KillMarker } from './RadarCanvas';
 
@@ -32,6 +33,7 @@ export function ReplayPanel({ demoId, detail, detailError, detailLoading }: Prop
   const tickRateHz = detail?.manifest?.tick_rate_hz ?? null;
   const [roundId, setRoundId] = useState<number | null>(null);
   const [manualLevel, setManualLevel] = useState<RadarLevel | null>(null);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
 
   const rounds = usePolled((signal) => client.rounds(demoId ?? '', { generation_id: generationId }, signal), 20000, {
     enabled: demoId !== null && generationId !== null,
@@ -124,6 +126,11 @@ export function ReplayPanel({ demoId, detail, detailError, detailLoading }: Prop
     <section className="panel" aria-label="Replay">
       <header className="panel-header">
         <h2>Replay</h2>
+        {generationId !== null ? (
+          <button type="button" onClick={() => setInspectorOpen((open) => !open)} aria-pressed={inspectorOpen}>
+            {inspectorOpen ? 'Hide inspector' : 'Show inspector'}
+          </button>
+        ) : null}
         <span className="count mono" title={demoId}>
           demo {shortHash(demoId)}
           {generationId !== null ? ` · gen ${shortHash(generationId)}` : ''}
@@ -239,6 +246,18 @@ export function ReplayPanel({ demoId, detail, detailError, detailLoading }: Prop
               />
 
               <WarningList warnings={replay.warnings} />
+
+              {inspectorOpen ? (
+                <Inspector
+                  demoId={demoId}
+                  generationId={generationId}
+                  tick={clock.tick}
+                  players={replay.players}
+                  tickRateHz={replay.tickRateHz}
+                  startTick={replay.startTick}
+                  onSeek={clock.seek}
+                />
+              ) : null}
 
               <div className="participants">
                 <h3>Participants ({replay.players.length})</h3>

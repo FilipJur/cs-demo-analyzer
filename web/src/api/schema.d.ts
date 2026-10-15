@@ -209,6 +209,125 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/demos/{demo_id}/analytics/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics State */
+        get: operations["analytics_state_api_v1_demos__demo_id__analytics_state_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/analytics/trajectory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics Trajectory */
+        get: operations["analytics_trajectory_api_v1_demos__demo_id__analytics_trajectory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/analytics/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics Events */
+        get: operations["analytics_events_api_v1_demos__demo_id__analytics_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/analytics/event-window": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics Event Window */
+        get: operations["analytics_event_window_api_v1_demos__demo_id__analytics_event_window_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/analytics/coverage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics Coverage */
+        get: operations["analytics_coverage_api_v1_demos__demo_id__analytics_coverage_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/analytics/distance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics Distance */
+        get: operations["analytics_distance_api_v1_demos__demo_id__analytics_distance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/multi/query": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Multi Query */
+        post: operations["multi_query_api_v1_demos_multi_query_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/assets/{asset_id}": {
         parameters: {
             query?: never;
@@ -239,6 +358,49 @@ export interface components {
             /** Demo Id */
             demo_id?: string | null;
         };
+        /** AnalyticState */
+        AnalyticState: {
+            /** Row Ordinal */
+            row_ordinal: number;
+            /** Tick */
+            tick: number;
+            /** Player Id */
+            player_id: string | null;
+            /** X */
+            x: number | null;
+            /** Y */
+            y: number | null;
+            /** Z */
+            z: number | null;
+            /** Yaw */
+            yaw: number | null;
+            /** Pitch */
+            pitch: number | null;
+            /** Velocity X */
+            velocity_x: number | null;
+            /** Velocity Y */
+            velocity_y: number | null;
+            /** Velocity Z */
+            velocity_z: number | null;
+            /** Health */
+            health: number | null;
+            /** Armor */
+            armor: number | null;
+            /** Money */
+            money: number | null;
+            /** Side */
+            side: string;
+            /** Active Weapon */
+            active_weapon: string | null;
+            /** Has Bomb */
+            has_bomb: boolean | null;
+            /** Is Crouched */
+            is_crouched: boolean | null;
+            /** Is Scoped */
+            is_scoped: boolean | null;
+            /** Is Reloading */
+            is_reloading: boolean | null;
+        };
         /** Capability */
         Capability: {
             /**
@@ -253,6 +415,19 @@ export interface components {
              * @default
              */
             note: string;
+        };
+        /** CoverageResponse */
+        CoverageResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Scope */
+            scope: string;
+            coverage: components["schemas"]["IdentityCoverage"];
         };
         /** DemoDetail */
         DemoDetail: {
@@ -282,6 +457,31 @@ export interface components {
             /** Warnings */
             warnings?: string[];
         };
+        /** DistanceResponse */
+        DistanceResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Tick */
+            tick: number;
+            /** Player A */
+            player_a: string;
+            /** Player B */
+            player_b: string;
+            /** Distance 2D */
+            distance_2d?: number | null;
+            /** Distance 3D */
+            distance_3d?: number | null;
+            /**
+             * Missing
+             * @default false
+             */
+            missing: boolean;
+        };
         /** ErrorResponse */
         ErrorResponse: {
             /** Code */
@@ -297,6 +497,41 @@ export interface components {
             retryable: boolean;
             /** Job Id */
             job_id?: string | null;
+        };
+        /** EventWindowResponse */
+        EventWindowResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            event: components["schemas"]["TimelineEvent"];
+            /** States */
+            states: components["schemas"]["AnalyticState"][];
+            /** Nearby Events */
+            nearby_events: components["schemas"]["TimelineEvent"][];
+        };
+        /** EventsResponse */
+        EventsResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number;
+            /** Event Count */
+            event_count: number;
+            /** Events */
+            events: components["schemas"]["TimelineEvent"][];
         };
         /** Fingerprint */
         Fingerprint: {
@@ -331,6 +566,25 @@ export interface components {
             worker_running: boolean;
             /** Free Bytes */
             free_bytes: number;
+        };
+        /** IdentityCoverage */
+        IdentityCoverage: {
+            /** Total Observations */
+            total_observations: number;
+            /** Identified */
+            identified: number;
+            /** Null Observations */
+            null_observations: number;
+            /** Alive Total */
+            alive_total: number;
+            /** Alive Identified */
+            alive_identified: number;
+            /** Alive Null */
+            alive_null: number;
+            /** Live Coverage */
+            live_coverage?: number | null;
+            /** Notes */
+            notes?: string[];
         };
         /** ImportRequest */
         ImportRequest: {
@@ -453,6 +707,58 @@ export interface components {
             };
             /** Warnings */
             warnings?: string[];
+        };
+        /**
+         * MultiQueryRequest
+         * @description Bounded fan-out request; ``op`` chooses the analytics call made per selection.
+         */
+        MultiQueryRequest: {
+            /** Selections */
+            selections: components["schemas"]["MultiQuerySelection"][];
+            /**
+             * Op
+             * @enum {string}
+             */
+            op: "coverage" | "events";
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+        };
+        /** MultiQueryResponse */
+        MultiQueryResponse: {
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Results */
+            results: components["schemas"]["MultiQueryResult"][];
+        };
+        /**
+         * MultiQueryResult
+         * @description Outcome of one selection: ``result`` on success, ``error`` when that demo failed.
+         */
+        MultiQueryResult: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id?: string | null;
+            /** Result */
+            result?: {
+                [key: string]: unknown;
+            } | null;
+            error?: components["schemas"]["ErrorResponse"] | null;
+        };
+        /**
+         * MultiQuerySelection
+         * @description One ``demo_id``/``generation_id`` pair resolved independently by the fan-out.
+         */
+        MultiQuerySelection: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id?: string | null;
         };
         /** RadarDescriptor */
         RadarDescriptor: {
@@ -649,6 +955,28 @@ export interface components {
             /** Updated At */
             updated_at: string;
         };
+        /** StateResponse */
+        StateResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            /** Requested Tick */
+            requested_tick: number;
+            /** Actual Tick */
+            actual_tick: number | null;
+            /** Gap Ticks */
+            gap_ticks?: number | null;
+            /** Exact */
+            exact: boolean;
+            /** States */
+            states: components["schemas"]["AnalyticState"][];
+        };
         /** TableDescriptor */
         TableDescriptor: {
             /** Path */
@@ -662,6 +990,47 @@ export interface components {
              * @default 1
              */
             schema_version: number;
+        };
+        /** TimelineEvent */
+        TimelineEvent: {
+            /** Dataset */
+            dataset: string;
+            /** Row Ordinal */
+            row_ordinal: number;
+            /** Tick */
+            tick: number;
+            /** Actor1 */
+            actor1?: string | null;
+            /** Actor2 */
+            actor2?: string | null;
+            /** Detail */
+            detail?: string | null;
+        };
+        /** TrajectoryResponse */
+        TrajectoryResponse: {
+            /** Generation Id */
+            generation_id: string;
+            /**
+             * Schema Version
+             * @default 1
+             */
+            schema_version: number;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            /** Player Id */
+            player_id: string;
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number;
+            /** Stride */
+            stride: number;
+            /** Sample Count */
+            sample_count: number;
+            /** Missing Ranges */
+            missing_ranges: number[][];
+            /** States */
+            states: components["schemas"]["AnalyticState"][];
         };
         /** ValidationError */
         ValidationError: {
@@ -1249,6 +1618,508 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReplayChunk"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_state_api_v1_demos__demo_id__analytics_state_get: {
+        parameters: {
+            query: {
+                tick: number;
+                generation_id?: string | null;
+                player_id?: string | null;
+                max_gap?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StateResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_trajectory_api_v1_demos__demo_id__analytics_trajectory_get: {
+        parameters: {
+            query: {
+                player_id: string;
+                start: number;
+                end: number;
+                generation_id?: string | null;
+                stride?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrajectoryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_events_api_v1_demos__demo_id__analytics_events_get: {
+        parameters: {
+            query: {
+                start: number;
+                end: number;
+                generation_id?: string | null;
+                datasets?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventsResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_event_window_api_v1_demos__demo_id__analytics_event_window_get: {
+        parameters: {
+            query: {
+                dataset: string;
+                row_ordinal: number;
+                generation_id?: string | null;
+                before?: number;
+                after?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventWindowResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_coverage_api_v1_demos__demo_id__analytics_coverage_get: {
+        parameters: {
+            query?: {
+                generation_id?: string | null;
+                round_id?: number | null;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoverageResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analytics_distance_api_v1_demos__demo_id__analytics_distance_get: {
+        parameters: {
+            query: {
+                player_a: string;
+                player_b: string;
+                tick: number;
+                generation_id?: string | null;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DistanceResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    multi_query_api_v1_demos_multi_query_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MultiQueryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MultiQueryResponse"];
                 };
             };
             /** @description Bad Request */

@@ -21,6 +21,25 @@ export type ReplayPlayer = Schemas['ReplayPlayer'];
 export type ReplaySample = Schemas['ReplaySample'];
 export type ReplayEvent = Schemas['ReplayEvent'];
 export type RadarDescriptor = Schemas['RadarDescriptor'];
+export type AnalyticState = Schemas['AnalyticState'];
+export type StateResponse = Schemas['StateResponse'];
+export type TrajectoryResponse = Schemas['TrajectoryResponse'];
+export type TimelineEvent = Schemas['TimelineEvent'];
+export type EventsResponse = Schemas['EventsResponse'];
+export type EventWindowResponse = Schemas['EventWindowResponse'];
+export type CoverageResponse = Schemas['CoverageResponse'];
+export type DistanceResponse = Schemas['DistanceResponse'];
+/** Provenance reference for future detectors; mirrors the backend EvidenceRef model. */
+export type EvidenceRef = {
+  demo_id: string;
+  generation_id: string;
+  profile_key: string;
+  dataset: string;
+  row_ordinal: number;
+  tick: number;
+  round_id: number | null;
+  player_ids: string[];
+};
 
 // Every literal below must exist in the generated `paths` table, so a route
 // rename in the backend breaks this file at compile time instead of at runtime.
