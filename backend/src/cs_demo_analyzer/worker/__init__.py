@@ -1,0 +1,1 @@
+"""Isolated extraction child entrypoint."""

@@ -1,0 +1,9 @@
+{
+  "positive_id": "76561198000000001",
+  "unknown_ids": [null, 0],
+  "observations": [
+    {"row_ordinal": 0, "tick": 64, "player_id": null},
+    {"row_ordinal": 1, "tick": 64, "player_id": null}
+  ],
+  "meaning": "Unknown actors are separate observations, never a shared player or a name-based join."
+}

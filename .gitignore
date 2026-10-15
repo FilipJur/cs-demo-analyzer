@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+node_modules/
+web/dist/
+*.dem
+*.dem.info
+*.dem.gz
+*.dem.bz2
+*.dem.zst
+*.parquet
+*.sqlite*
+*.log
+.env
+.data/
