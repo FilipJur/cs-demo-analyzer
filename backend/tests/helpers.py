@@ -22,7 +22,7 @@ from fastapi.testclient import TestClient
 
 from cs_demo_analyzer.application import Application
 from cs_demo_analyzer.config import Settings
-from cs_demo_analyzer.domain.contracts import Fingerprint, Manifest, Snapshot, TableDescriptor
+from cs_demo_analyzer.domain.contracts import PROFILE_KEY, Fingerprint, Manifest, Snapshot, TableDescriptor
 from cs_demo_analyzer.domain.tables import SCHEMAS
 from cs_demo_analyzer.storage.artifacts import MANIFEST_NAME, sha256_file
 
@@ -353,8 +353,13 @@ def start_job(app: Application, demo_id: str, *, force: bool = False):
 
 
 def start_reprocess(app: Application, demo_id: str):
-    """Deliberate reprocess through the coordinator entry point, claimed and running."""
-    accepted = app.reprocess(demo_id)
+    """Deliberate reprocess through the coordinator entry point, claimed and running.
+
+    Pinned to the frozen foundation profile because this module's
+    ``publish_generation`` writes foundation-shaped manifests: the application
+    default is the current extended profile, which is covered separately.
+    """
+    accepted = app.reprocess(demo_id, profile_key=PROFILE_KEY)
     assert accepted.job_id is not None
     claimed = app.catalog.claim_next()
     assert claimed is not None and claimed.id == accepted.job_id

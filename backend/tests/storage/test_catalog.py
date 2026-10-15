@@ -17,6 +17,7 @@ from cs_demo_analyzer.domain.contracts import (
     Manifest,
     Snapshot,
 )
+from cs_demo_analyzer.storage.schema import CATALOG_SCHEMA_VERSION
 
 from .support import TABLE_NAMES, Harness
 
@@ -31,6 +32,7 @@ CATALOG_TABLES = (
     "jobs",
     "generations",
     "demo_heads",
+    "app_settings",
 )
 
 
@@ -67,13 +69,13 @@ def test_migrations_create_the_catalog_schema_and_reopen_is_idempotent(catalog, 
     names = _table_names(data_root)
     assert set(CATALOG_TABLES) <= names
     assert names & set(TABLE_NAMES) == set(), "canonical gameplay tables must stay in Parquet, not SQLite"
-    assert catalog.catalog_version == 1
+    assert catalog.catalog_version == CATALOG_SCHEMA_VERSION
 
     from cs_demo_analyzer.storage import Catalog
 
     reopened = Catalog(data_root)
     try:
-        assert reopened.catalog_version == 1
+        assert reopened.catalog_version == CATALOG_SCHEMA_VERSION
         assert reopened.list_roots() == []
     finally:
         reopened.close()

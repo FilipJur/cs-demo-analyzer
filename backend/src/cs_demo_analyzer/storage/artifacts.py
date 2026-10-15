@@ -4,6 +4,11 @@ The parser finishes its attempt-specific directory before publication. Validate,
 fsync and rename that directory on the same filesystem; do not copy/re-encode
 the dataset a second time. The coordinator commits the catalog pointer afterward.
 
+Validation is profile-aware: a manifest is checked against the table set and
+column dtypes of *its own* named profile, and a manifest whose ``profile_key`` is
+not that profile's canonical key is refused, so a generation can never be read
+under the wrong contract.
+
 Nothing here schedules, retries or mutates the catalog: the coordinator calls
 ``Catalog.complete`` after publication.
 """
@@ -18,8 +23,8 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from ..domain.contracts import JobRecord, Manifest
-from ..domain.tables import SCHEMAS
+from ..domain.contracts import PROFILE_KEYS, JobRecord, Manifest
+from ..domain.tables import schema_for_profile
 from .errors import ArtifactInvalid, StorageError
 
 MANIFEST_NAME = "manifest.json"
@@ -103,13 +108,30 @@ def _table_file_name(descriptor_path: str, table: str) -> str:
     return descriptor_path
 
 
+def _profile_schemas(manifest: Manifest) -> dict[str, dict[str, pl.DataType]]:
+    """Table schemas of the manifest's profile, refusing a mislabeled generation.
+
+    Validation is profile-aware: each named profile has its own table set and
+    column dtypes, so a manifest whose ``profile_key`` is not the canonical key
+    of its ``profile`` (or whose tables do not match that profile) is rejected
+    instead of being read under the wrong contract.
+    """
+    expected = PROFILE_KEYS.get(manifest.profile)
+    if expected is None or expected != manifest.profile_key:
+        raise ArtifactInvalid(
+            f"manifest profile {manifest.profile!r} does not match profile_key "
+            f"{manifest.profile_key!r} (expected {expected!r})"
+        )
+    return schema_for_profile(manifest.profile)
+
+
 def assert_table_layout(manifest: Manifest, directory: Path) -> dict[str, str]:
     """Check the manifest table set and that each referenced file exists.
 
     Cheap enough for a short catalog transaction: it stats files and never reads
     or hashes them. Returns table name -> file name.
     """
-    expected = set(SCHEMAS)
+    expected = set(_profile_schemas(manifest))
     found = set(manifest.tables)
     if found != expected:
         missing = sorted(expected - found)
@@ -184,10 +206,11 @@ class Artifacts:
                 raise ArtifactInvalid(f"path component {current} is a symlink")
 
     def _verify_tables(self, manifest: Manifest, directory: Path, names: dict[str, str]) -> None:
-        for table in sorted(SCHEMAS):
+        schemas = _profile_schemas(manifest)
+        for table in sorted(schemas):
             descriptor = manifest.tables[table]
             path = directory / names[table]
-            expected_dtypes = {column: str(dtype) for column, dtype in SCHEMAS[table].items()}
+            expected_dtypes = {column: str(dtype) for column, dtype in schemas[table].items()}
             try:
                 rows, dtypes = _parquet_facts(path)
             except Exception as exc:

@@ -33,7 +33,7 @@ from typing import TYPE_CHECKING, Any, Callable, TypeVar
 import polars as pl
 
 from ..domain.contracts import AppError, ErrorResponse, Manifest
-from ..domain.tables import SCHEMAS
+from ..domain.tables import schema_for_profile
 from ..storage.artifacts import MANIFEST_NAME, assert_table_layout, read_manifest
 from ..storage.errors import ArtifactInvalid
 
@@ -62,9 +62,21 @@ class Generation:
     players: pl.DataFrame
 
 
-def _empty(table: str) -> pl.DataFrame:
+def _profile_schemas(profile: str, generation_id: str) -> dict[str, dict[str, pl.DataType]]:
+    """Table schemas of a generation's profile; an unknown profile is a read error."""
+    try:
+        return schema_for_profile(profile)
+    except KeyError:
+        raise AppError(
+            "ARTIFACT_INVALID",
+            f"generation {generation_id} names unknown profile {profile!r}",
+            STAGE,
+        ) from None
+
+
+def _empty(schema: dict[str, pl.DataType]) -> pl.DataFrame:
     """Schema-shaped empty frame, used only while a generation is being opened."""
-    return pl.DataFrame({name: pl.Series(name, [], dtype=dtype) for name, dtype in SCHEMAS[table].items()})
+    return pl.DataFrame({name: pl.Series(name, [], dtype=dtype) for name, dtype in schema.items()})
 
 
 def _error_response(exc: Exception) -> ErrorResponse:
@@ -121,6 +133,7 @@ class GenerationPool:
                 STAGE,
             )
 
+        schemas = _profile_schemas(manifest.profile, manifest.generation_id)
         gen = Generation(
             demo_id=demo_id,
             generation_id=wanted,
@@ -128,8 +141,8 @@ class GenerationPool:
             tick_rate_hz=manifest.tick_rate_hz,
             manifest=manifest,
             dir=directory,
-            rounds=_empty("rounds"),
-            players=_empty("players"),
+            rounds=_empty(schemas["rounds"]),
+            players=_empty(schemas["players"]),
         )
         try:
             rounds = self.read(gen, "rounds")
@@ -151,13 +164,19 @@ class GenerationPool:
     ) -> pl.LazyFrame:
         """Lazy scan of one table with optional projection and row filter.
 
-        ``table`` must be a frozen profile table and ``columns`` a subset of it;
-        anything else is ``INVALID_ARGUMENT``. The predicate is applied before
-        the projection, so it may reference any column of the table.
+        ``table`` must be a table of the generation's profile and ``columns`` a
+        subset of it; anything else is ``INVALID_ARGUMENT``. The predicate is
+        applied before the projection, so it may reference any column of the table.
         """
-        schema = SCHEMAS.get(table)
+        schemas = _profile_schemas(gen.manifest.profile, gen.generation_id)
+        schema = schemas.get(table)
         if schema is None:
-            raise AppError("INVALID_ARGUMENT", f"unknown table {table!r}; known tables {sorted(SCHEMAS)}", STAGE)
+            raise AppError(
+                "INVALID_ARGUMENT",
+                f"unknown table {table!r} for profile {gen.manifest.profile!r}; "
+                f"known tables {sorted(schemas)}",
+                STAGE,
+            )
         descriptor = gen.manifest.tables.get(table)
         if descriptor is None:
             raise AppError("INVALID_ARGUMENT", f"generation {gen.generation_id} has no table {table!r}", STAGE)

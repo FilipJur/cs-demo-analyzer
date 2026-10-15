@@ -19,7 +19,9 @@ from typing import Iterator
 from uuid import uuid4
 
 from ..domain.contracts import (
+    DEFAULT_PROFILE_KEY,
     PROFILE_KEY,
+    PROFILE_KEYS,
     DemoRecord,
     ErrorResponse,
     Fingerprint,
@@ -245,7 +247,9 @@ class Catalog:
         return record
 
     def get_demo(self, demo_id: str) -> DemoRecord | None:
-        rows = self._query(f"{self._DEMO_SELECT} WHERE d.demo_id = ?", (PROFILE_KEY, demo_id))
+        rows = self._query(
+            f"{self._DEMO_SELECT} WHERE d.demo_id = ?", (DEFAULT_PROFILE_KEY, PROFILE_KEY, demo_id)
+        )
         return self._demo(rows[0]) if rows else None
 
     def list_demos(self, limit: int = 100, offset: int = 0) -> list[DemoRecord]:
@@ -253,17 +257,27 @@ class Catalog:
             return []
         rows = self._query(
             f"{self._DEMO_SELECT} ORDER BY d.created_at DESC, d.rowid DESC LIMIT ? OFFSET ?",
-            (PROFILE_KEY, limit, max(offset, 0)),
+            (DEFAULT_PROFILE_KEY, PROFILE_KEY, limit, max(offset, 0)),
         )
         return [self._demo(row) for row in rows]
 
+    #: A demo can hold one head per profile. The reported head is the preferred
+    #: (default) profile when it exists, otherwise the frozen foundation head, so
+    #: a demo extracted only by the older profile keeps reporting that generation
+    #: while a demo extracted by the current profile reports the newer one.
     _DEMO_SELECT = """
         SELECT d.demo_id, d.raw_path, d.size, d.created_at, d.fingerprint_json,
                s.fingerprint_json AS current_source_fingerprint, s.status AS current_source_status,
                h.generation_id AS head_generation, g.manifest_relpath, g.map_name,
                g.quality, g.warnings_json
         FROM demos AS d
-        LEFT JOIN demo_heads AS h ON h.demo_id = d.demo_id AND h.profile_key = ?
+        LEFT JOIN demo_heads AS h ON h.rowid = (
+            SELECT candidate.rowid FROM demo_heads AS candidate
+            WHERE candidate.demo_id = d.demo_id
+            ORDER BY CASE candidate.profile_key WHEN ? THEN 0 WHEN ? THEN 1 ELSE 2 END,
+                     candidate.updated_at DESC
+            LIMIT 1
+        )
         LEFT JOIN generations AS g ON g.generation_id = h.generation_id
         LEFT JOIN sources AS s ON s.path = d.source_path
     """
@@ -288,8 +302,28 @@ class Catalog:
         )
 
     # -- jobs --------------------------------------------------------------
-    def enqueue(self, demo_id: str, force: bool = False) -> JobRecord:
-        profile = PROFILE_KEY
+    def enqueue(
+        self, demo_id: str, force: bool = False, profile_key: str | None = None
+    ) -> JobRecord:
+        """Queue one extraction attempt for ``demo_id`` under ``profile_key``.
+
+        ``profile_key=None`` keeps the frozen ``foundation-v1`` profile for direct
+        library callers. The application and ingestion layers pass
+        :data:`~cs_demo_analyzer.domain.contracts.DEFAULT_PROFILE_KEY` so new work
+        is extracted by the current extended profile, while an explicit
+        foundation request stays a supported, ordinary job. Attempts and the
+        single-active-job rule are scoped to ``(demo, profile)``.
+
+        The profile key is a trust boundary: a key this build does not implement
+        is rejected before anything durable is written, so the catalog never
+        holds a job that is guaranteed to fail in the parser.
+        """
+        profile = PROFILE_KEY if profile_key is None else profile_key
+        if profile not in PROFILE_KEYS.values():
+            raise CatalogError(
+                f"unsupported profile key {profile!r}; supported keys {sorted(PROFILE_KEYS.values())}",
+                code="INVALID_PROFILE",
+            )
         now = utc_now()
         with self._tx() as conn:
             if conn.execute("SELECT 1 FROM demos WHERE demo_id = ?", (demo_id,)).fetchone() is None:
@@ -385,17 +419,16 @@ class Catalog:
         return [_job(row) for row in rows]
 
     def interrupted_jobs(self) -> list[JobRecord]:
-        """Latest interrupted attempts only; historical attempts never requeue again."""
+        """Latest interrupted attempt per demo and profile; older attempts never requeue."""
         rows = self._query(
             """SELECT j.* FROM jobs AS j
-               WHERE j.state = 'interrupted' AND j.profile_key = ?
+               WHERE j.state = 'interrupted'
                  AND NOT EXISTS (
                      SELECT 1 FROM jobs AS newer
                      WHERE newer.demo_id = j.demo_id AND newer.profile_key = j.profile_key
                        AND newer.attempt > j.attempt
                  )
-               ORDER BY j.created_at, j.rowid""",
-            (PROFILE_KEY,),
+               ORDER BY j.created_at, j.rowid"""
         )
         return [_job(row) for row in rows]
 

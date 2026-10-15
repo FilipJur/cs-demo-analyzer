@@ -19,8 +19,19 @@ from .assets.radar import RadarService
 from .config import Settings
 from .discovery.steam import discover_install, discover_roots
 from .discovery.watcher import scan_root, watch_roots
-from .domain.contracts import Accepted, AppError, ErrorResponse, ExtractionRequest, Fingerprint, Observation, RootRequest, WorkerResult
-from .domain.contracts import Snapshot
+from .domain.contracts import (
+    DEFAULT_PROFILE_KEY,
+    Accepted,
+    AppError,
+    ErrorResponse,
+    ExtractionRequest,
+    Fingerprint,
+    Observation,
+    RootRequest,
+    Snapshot,
+    WorkerResult,
+    profile_for_key,
+)
 from .ingestion.service import IngestionService, error_from
 from .storage.artifacts import Artifacts
 from .storage.catalog import Catalog
@@ -79,11 +90,11 @@ class Application:
                     self.catalog.complete(job.id, manifest, final)
                 else:
                     self.catalog.fail(job.id, ErrorResponse(code="INTERRUPTED", message="Previous extraction was interrupted", stage="recovery", retryable=True), state="interrupted")
-                    self.catalog.enqueue(job.demo_id, force=True)
+                    self.catalog.enqueue(job.demo_id, force=True, profile_key=job.profile_key)
             except Exception as exc:
                 self.catalog.fail(job.id, error_from(exc, "recovery"))
         for job in self.catalog.interrupted_jobs():
-            self.catalog.enqueue(job.demo_id, force=True)
+            self.catalog.enqueue(job.demo_id, force=True, profile_key=job.profile_key)
         # Recover a raw rename interrupted before catalog registration, even
         # when the external source has disappeared in the meantime.
         for directory in (self.settings.data_root / "raw").iterdir():
@@ -99,7 +110,7 @@ class Application:
                 logger.error("Unregistered raw recording failed content verification: %s", demo_id)
                 continue
             self.catalog.register_demo(Snapshot(demo_id=demo_id, raw_path=str(raw), size=raw.stat().st_size, source_path=str(raw), fingerprint=Fingerprint.from_path(raw)))
-            self.catalog.enqueue(demo_id)
+            self.catalog.enqueue(demo_id, profile_key=DEFAULT_PROFILE_KEY)
         # Import copying happens only in this process, never in an orphan child.
         for path in (self.settings.data_root / "staging").glob("import-*"):
             suffix = path.name.removeprefix("import-")
@@ -134,10 +145,21 @@ class Application:
         self._wake.set()
         return root
 
-    def reprocess(self, demo_id: str):
+    def reprocess(self, demo_id: str, profile_key: str | None = None):
+        """Queue a fresh extraction of a retained recording.
+
+        ``profile_key=None`` means the current default profile
+        (:data:`~cs_demo_analyzer.domain.contracts.DEFAULT_PROFILE_KEY`);
+        ``PROFILE_KEY`` still requests the frozen foundation profile explicitly.
+        An unsupported key is rejected here, before any durable job is written.
+        """
         if self.catalog.get_demo(demo_id) is None:
             raise AppError("NOT_FOUND", "Demo does not exist", "reprocess")
-        job = self.catalog.enqueue(demo_id, force=True)
+        if profile_key is not None:
+            profile_for_key(profile_key)
+        job = self.catalog.enqueue(
+            demo_id, force=True, profile_key=DEFAULT_PROFILE_KEY if profile_key is None else profile_key
+        )
         self._wake.set()
         return Accepted(status=job.state, job_id=job.id, demo_id=demo_id)
 
@@ -215,7 +237,7 @@ class Application:
                 raise AppError("NOT_FOUND", "Queued recording is unavailable", "parse")
             self.settings.check_space(demo.size, copying=False)
             stage = self.artifacts.stage_dir(job)
-            request = ExtractionRequest(job_id=job.id, generation_id=job.generation_id, demo_id=job.demo_id, input_path=demo.raw_path, output_dir=str(stage), parent_pid=os.getpid())
+            request = ExtractionRequest(job_id=job.id, generation_id=job.generation_id, demo_id=job.demo_id, input_path=demo.raw_path, output_dir=str(stage), profile=profile_for_key(job.profile_key), profile_key=job.profile_key, parent_pid=os.getpid())
             with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
                 process = subprocess.Popen([sys.executable, "-m", "cs_demo_analyzer.worker.main"], stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, start_new_session=True)
                 self._process = process

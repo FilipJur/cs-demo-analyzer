@@ -12,7 +12,7 @@ import sqlite3
 from pathlib import Path
 
 MIGRATIONS_DIR = Path(__file__).resolve().parent / "migrations"
-CATALOG_SCHEMA_VERSION = 1
+CATALOG_SCHEMA_VERSION = 2  # 1: catalog core; 2: singleton app_settings row
 
 _NAME_RE = re.compile(r"^(\d+)_[a-z0-9_]+\.sql$")
 

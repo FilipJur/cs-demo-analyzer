@@ -12,13 +12,41 @@ PARSER_VERSION = "3.0.0"
 NORMALIZER_VERSION = "1"
 PROFILE_KEY = "foundation-v1:awpy-3.0.0:schema-1:normalizer-1"
 
+#: The extended profile keeps every ``foundation-v1`` table, column and semantic
+#: exactly as published and adds utility/economy/lifecycle tables plus further
+#: *recorded* upstream fields. It never reinterprets a foundation column.
+RECONSTRUCTION_PROFILE_NAME = "reconstruction-v1"
+RECONSTRUCTION_SCHEMA_VERSION = 2
+RECONSTRUCTION_NORMALIZER_VERSION = "1"
+RECONSTRUCTION_PROFILE_KEY = "reconstruction-v1:awpy-3.0.0:schema-2:normalizer-1"
+
+#: What new extraction work asks for. ``foundation-v1`` stays a named, explicitly
+#: requestable profile so previously published generations keep their exact meaning.
+DEFAULT_PROFILE_NAME = RECONSTRUCTION_PROFILE_NAME
+DEFAULT_PROFILE_KEY = RECONSTRUCTION_PROFILE_KEY
+
+ProfileName = Literal["foundation-v1", "reconstruction-v1"]
+
+PROFILE_KEYS: dict[str, str] = {
+    PROFILE_NAME: PROFILE_KEY,
+    RECONSTRUCTION_PROFILE_NAME: RECONSTRUCTION_PROFILE_KEY,
+}
+PROFILE_SCHEMA_VERSIONS: dict[str, int] = {
+    PROFILE_NAME: SCHEMA_VERSION,
+    RECONSTRUCTION_PROFILE_NAME: RECONSTRUCTION_SCHEMA_VERSION,
+}
+PROFILE_NORMALIZER_VERSIONS: dict[str, str] = {
+    PROFILE_NAME: NORMALIZER_VERSION,
+    RECONSTRUCTION_PROFILE_NAME: RECONSTRUCTION_NORMALIZER_VERSION,
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
 class Model(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", json_schema_serialization_defaults_required=True)
 
 
 class AppError(Exception):
@@ -28,6 +56,38 @@ class AppError(Exception):
 
     def payload(self) -> dict:
         return dict(code=self.code, message=self.message, stage=self.stage, retryable=self.retryable)
+
+
+def profile_key_for(profile: str) -> str:
+    """The canonical ``<profile>:<parser>:schema-<n>:normalizer-<n>`` key."""
+    try:
+        return PROFILE_KEYS[profile]
+    except KeyError:
+        raise AppError(
+            "INVALID_PROFILE",
+            f"unknown profile {profile!r}; known profiles {sorted(PROFILE_KEYS)}",
+            "parse",
+        ) from None
+
+
+def profile_for_key(profile_key: str) -> str:
+    """The named profile a key belongs to; raises ``AppError`` for an unknown key."""
+    for profile, key in PROFILE_KEYS.items():
+        if key == profile_key:
+            return profile
+    raise AppError(
+        "INVALID_PROFILE",
+        f"unknown profile key {profile_key!r}; known keys {sorted(PROFILE_KEYS.values())}",
+        "parse",
+    )
+
+
+def schema_version_for(profile: str) -> int:
+    return PROFILE_SCHEMA_VERSIONS[profile]
+
+
+def normalizer_version_for(profile: str) -> str:
+    return PROFILE_NORMALIZER_VERSIONS[profile]
 
 
 class ErrorResponse(Model):
@@ -96,7 +156,10 @@ class ExtractionRequest(Model):
     demo_id: str
     input_path: str
     output_dir: str
-    profile: Literal["foundation-v1"] = PROFILE_NAME
+    profile: ProfileName = PROFILE_NAME
+    #: Canonical key of the requested profile. The worker rejects a mismatch
+    #: instead of writing a generation under a key it did not implement.
+    profile_key: str | None = None
     parent_pid: int | None = None
 
 
@@ -105,7 +168,7 @@ class Manifest(Model):
     demo_id: str
     job_id: str
     generation_id: str
-    profile: Literal["foundation-v1"] = PROFILE_NAME
+    profile: ProfileName = PROFILE_NAME
     profile_key: str = PROFILE_KEY
     parser_version: str = PARSER_VERSION
     normalizer_version: str = NORMALIZER_VERSION

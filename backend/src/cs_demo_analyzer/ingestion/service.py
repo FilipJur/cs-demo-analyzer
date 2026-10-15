@@ -11,7 +11,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from ..config import Settings
-from ..domain.contracts import AppError, ErrorResponse, Fingerprint, Observation, Snapshot
+from ..domain.contracts import DEFAULT_PROFILE_KEY, AppError, ErrorResponse, Fingerprint, Observation, Snapshot
 
 MAGIC = b"PBDEMS2\0"
 COMPRESSED = (".dem.gz", ".dem.bz2", ".dem.zst", ".dem.zip")
@@ -104,7 +104,7 @@ class IngestionService:
         previous = self.catalog.get_source(path)
         if not force and previous and previous.fingerprint == observation.fingerprint and previous.status in ("imported", "error", "unsupported"):
             if previous.demo_id and previous.status == "imported":
-                self.catalog.enqueue(previous.demo_id)
+                self.catalog.enqueue(previous.demo_id, profile_key=DEFAULT_PROFILE_KEY)
                 self.capture_sidecar(path, previous.demo_id)
             return previous.demo_id
         pending = self._pending.get(path)
@@ -122,7 +122,7 @@ class IngestionService:
             snapshot = snapshot_source(observation, self.settings)
             self.catalog.register_demo(snapshot)
             self.catalog.set_source(path, fingerprint, "imported", demo_id=snapshot.demo_id)
-            self.catalog.enqueue(snapshot.demo_id)
+            self.catalog.enqueue(snapshot.demo_id, profile_key=DEFAULT_PROFILE_KEY)
             self.capture_sidecar(path, snapshot.demo_id)
             return snapshot.demo_id
         except Exception as exc:
