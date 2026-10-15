@@ -9,6 +9,36 @@ export type KillMarker = {
   y: number;
 };
 
+/** One qualified relation line drawn in world/radar space. */
+export type RadarRelationLine = {
+  id: string;
+  qualifier: 'clear' | 'estimated' | 'blocked' | 'unproven';
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+};
+
+/** One recorded trajectory sample; nulls and death are recorded gaps, not edges. */
+export type RadarTrajectorySample = {
+  tick: number;
+  x: number | null;
+  y: number | null;
+  health: number | null;
+};
+
+/**
+ * A recorded trajectory on the encounter's sampling grid.
+ *
+ * The polyline is drawn only between samples that are exactly `strideTicks`
+ * apart and observable at both ends; missing grid ticks, unusable coordinates
+ * and death breaks are never connected.
+ */
+export type RadarTrajectory = {
+  id: string;
+  label: string;
+  strideTicks: number;
+  samples: RadarTrajectorySample[];
+};
+
 type Props = {
   radar: RadarDescriptor;
   projection: Projection;
@@ -20,6 +50,10 @@ type Props = {
   markers: KillMarker[];
   tick: number;
   imageUrl: string | null;
+  /** Qualified sightline overlay; omitted or empty draws nothing extra. */
+  relations?: RadarRelationLine[];
+  /** Recorded subject trajectory of the selected encounter. */
+  trajectory?: RadarTrajectory | null;
 };
 
 function drawGrid(context: CanvasRenderingContext2D, width: number, height: number): void {
@@ -81,7 +115,80 @@ function drawActor(context: CanvasRenderingContext2D, px: number, py: number, ac
   context.fillText(label, px, py - 18);
 }
 
-export function RadarCanvas({ radar, projection, levels, level, onLevelChange, actors, playerById, markers, tick, imageUrl }: Props): ReactNode {
+/** Overlay colors: only a proven static line with recorded endpoints is green. */
+const QUALIFIER_COLORS = { clear: '#5ad18a', estimated: '#6fd3c7', blocked: '#ff5b5b', unproven: '#8b93a1' } as const;
+
+/**
+ * Draw one relation line. Only an exact static-clear answer with recorded
+ * endpoints is drawn as a solid unobstructed line; a clear answer between
+ * estimated endpoints is drawn dashed teal, blocked lines are solid red, and
+ * every unknown, unsupported or version-mismatched answer is dashed grey —
+ * never clear.
+ */
+function drawRelation(context: CanvasRenderingContext2D, line: RadarRelationLine, scaleX: number, scaleY: number, projection: Projection): void {
+  const from = projection.toPixels(line.from.x, line.from.y);
+  const to = projection.toPixels(line.to.x, line.to.y);
+  context.strokeStyle = QUALIFIER_COLORS[line.qualifier];
+  context.lineWidth = line.qualifier === 'clear' || line.qualifier === 'blocked' ? 2.5 : 1.5;
+  context.setLineDash(line.qualifier === 'clear' || line.qualifier === 'blocked' ? [] : [5, 5]);
+  context.beginPath();
+  context.moveTo(from.px * scaleX, from.py * scaleY);
+  context.lineTo(to.px * scaleX, to.py * scaleY);
+  context.stroke();
+  context.setLineDash([]);
+}
+
+/**
+ * Draw a recorded trajectory as dashes on its sampling grid.
+ *
+ * A run ends — and a new one starts — whenever a sample is unusable (missing
+ * grid tick, non-finite coordinate, dead or unknown health), so no edge ever
+ * crosses a gap or a death. Each recorded sample also gets a dot, so isolated
+ * observations stay visible instead of being silently dropped.
+ */
+function drawTrajectory(context: CanvasRenderingContext2D, trajectory: RadarTrajectory, scaleX: number, scaleY: number, projection: Projection): void {
+  const stride = Math.max(1, trajectory.strideTicks);
+  context.strokeStyle = 'rgba(232,235,240,0.6)';
+  context.fillStyle = 'rgba(232,235,240,0.6)';
+  context.lineWidth = 1.5;
+  context.setLineDash([2, 4]);
+  let expectedTick: number | null = null;
+  let drawing = false;
+  for (const sample of trajectory.samples) {
+    const x = sample.x;
+    const y = sample.y;
+    const usable = x !== null && y !== null && Number.isFinite(x) && Number.isFinite(y) && sample.health !== null && sample.health > 0;
+    if (!usable) {
+      if (drawing) {
+        context.stroke();
+        drawing = false;
+      }
+      expectedTick = null;
+      continue;
+    }
+    const pixels = projection.toPixels(x, y);
+    const px = pixels.px * scaleX;
+    const py = pixels.py * scaleY;
+    if (!drawing || sample.tick !== expectedTick) {
+      if (drawing) context.stroke();
+      context.beginPath();
+      context.moveTo(px, py);
+      drawing = true;
+    } else {
+      context.lineTo(px, py);
+    }
+    expectedTick = sample.tick + stride;
+    context.beginPath();
+    context.arc(px, py, 1.5, 0, Math.PI * 2);
+    context.fill();
+    context.beginPath();
+    context.moveTo(px, py);
+  }
+  if (drawing) context.stroke();
+  context.setLineDash([]);
+}
+
+export function RadarCanvas({ radar, projection, levels, level, onLevelChange, actors, playerById, markers, tick, imageUrl, relations = [], trajectory = null }: Props): ReactNode {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -137,6 +244,8 @@ export function RadarCanvas({ radar, projection, levels, level, onLevelChange, a
     }
     const scaleX = size.width / projection.width;
     const scaleY = size.height / projection.height;
+    if (trajectory !== null) drawTrajectory(context, trajectory, scaleX, scaleY, projection);
+    for (const line of relations) drawRelation(context, line, scaleX, scaleY, projection);
     for (const marker of markers) {
       const point = projection.toPixels(marker.x, marker.y);
       drawMarker(context, point.px * scaleX, point.py * scaleY, marker.tick === tick);
@@ -152,7 +261,7 @@ export function RadarCanvas({ radar, projection, levels, level, onLevelChange, a
       context.textBaseline = 'middle';
       context.fillText('No live player observations at this tick', size.width / 2, size.height / 2);
     }
-  }, [size, image, actors, markers, projection, playerById, tick]);
+  }, [size, image, actors, markers, projection, playerById, tick, relations, trajectory]);
 
   return (
     <div className="radar">
@@ -189,12 +298,21 @@ export function RadarCanvas({ radar, projection, levels, level, onLevelChange, a
           ref={canvasRef}
           style={{ width: '100%', height: '100%' }}
           role="img"
-          aria-label={`Radar of ${radar.map_name} at tick ${tick}: ${actors.length} visible players, ${markers.length} kill markers`}
+          aria-label={`Radar of ${radar.map_name} at tick ${tick}: ${actors.length} visible players, ${markers.length} kill markers, ${relations.length} qualified relation lines`}
         />
         <span className="radar-tick" aria-hidden="true">
           tick {tick}
         </span>
       </div>
+      {relations.length > 0 || trajectory !== null ? (
+        <p className="small radar-overlay-legend" role="status">
+          <span className="qualifier-clear">solid green</span> = no static obstruction in the matching installed assets ·{' '}
+          <span className="qualifier-estimated">dashed teal</span> = static clear but at least one endpoint is an estimated eye position ·{' '}
+          <span className="qualifier-blocked">solid red</span> = static obstruction recorded ·{' '}
+          <span className="qualifier-unproven">dashed grey</span> = unknown, unsupported or version-mismatched sightline (not proven clear)
+          {trajectory === null ? '' : ` · dotted white = ${trajectory.label} — sampled recorded positions, not continuous movement`}
+        </p>
+      ) : null}
       {imageError !== null ? (
         <p className="notice notice-warning" role="status">
           {imageError} Positions are still drawn in world-scaled radar space.

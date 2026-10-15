@@ -8,6 +8,7 @@ import { JobsPanel } from './components/JobsPanel';
 import { ReplayPanel } from './components/ReplayPanel';
 import { RootsPanel } from './components/RootsPanel';
 import { SourcesPanel } from './components/SourcesPanel';
+import { SubjectPanel } from './components/SubjectPanel';
 import { usePolled } from './lib/usePolling';
 
 export function App(): ReactNode {
@@ -17,6 +18,7 @@ export function App(): ReactNode {
   const jobs = usePolled((signal) => client.jobs(signal), 3000);
   const demos = usePolled((signal) => client.demos({ limit: 200 }, signal), 5000);
   const [selectedDemoId, setSelectedDemoId] = useState<string | null>(null);
+  const [subjectSteamId, setSubjectSteamId] = useState<string | null>(null);
   const [detail, setDetail] = useState<DemoDetail | null>(null);
   const [detailError, setDetailError] = useState<ApiError | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -77,6 +79,7 @@ export function App(): ReactNode {
 
       <main className="layout">
         <div className="column">
+          <SubjectPanel subjectSteamId={subjectSteamId} onSubjectChanged={(config) => setSubjectSteamId(config.steam_id)} />
           <RootsPanel roots={roots.data} error={roots.error} onChanged={refreshLibrary} />
           <ImportPanel onChanged={refreshLibrary} />
           <SourcesPanel sources={sources.data} error={sources.error} />
@@ -91,7 +94,7 @@ export function App(): ReactNode {
             onSelect={selectDemo}
             onChanged={refreshLibrary}
           />
-          <ReplayPanel demoId={selectedDemoId} detail={detail} detailError={detailError} detailLoading={detailLoading} />
+          <ReplayPanel demoId={selectedDemoId} detail={detail} detailError={detailError} detailLoading={detailLoading} subjectSteamId={subjectSteamId} />
         </div>
       </main>
 

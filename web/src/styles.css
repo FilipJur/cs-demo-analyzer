@@ -464,6 +464,98 @@ button:disabled {
   margin-top: 12px;
 }
 
+/* -- Phase 2 reconstruction vocabulary ------------------------------------- */
+
+/* Sightline qualifiers: only `qualifier-clear` may look unobstructed; unknown,
+   unsupported and version-mismatched answers are always shown as unproven. */
+.qualifier-clear {
+  color: var(--ok);
+}
+
+.qualifier-blocked {
+  color: var(--danger);
+}
+
+/* Static clear, but at least one endpoint is an estimated eye position. */
+.qualifier-estimated {
+  color: #6fd3c7;
+}
+
+.qualifier-unproven {
+  color: var(--warn);
+}
+
+.badge.qualifier-clear {
+  border-color: #2c5f45;
+}
+
+.badge.qualifier-estimated {
+  border-color: #2c5f5f;
+}
+
+.badge.qualifier-blocked {
+  border-color: #6b2b34;
+}
+
+.badge.qualifier-unproven {
+  border-color: #6b5c2b;
+}
+
+.panel h4 {
+  margin: 12px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.panel details {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.panel details summary {
+  cursor: pointer;
+  color: var(--text-dim);
+}
+
+.list.dense {
+  gap: 4px;
+}
+
+.list.dense .list-row {
+  padding: 5px 8px;
+  font-size: 12.5px;
+}
+
+.relation-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.geometry-point {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.geometry-point label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.geometry-point input {
+  width: 84px;
+}
+
+.radar-overlay-legend {
+  margin: 6px 0 0;
+}
+
 .app-footer {
   display: flex;
   gap: 16px;

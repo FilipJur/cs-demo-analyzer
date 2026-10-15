@@ -10,6 +10,8 @@ export type ReplayTarget = {
 };
 
 export type ReplayState = {
+  /** Round whose window the payload describes; null until a load succeeds. */
+  roundId: number | null;
   samples: ReplaySample[];
   players: ReplayPlayer[];
   events: ReplayEvent[];
@@ -26,6 +28,7 @@ export type ReplayState = {
 type LoadedReplay = Omit<ReplayState, 'loading' | 'error'>;
 
 const EMPTY: ReplayState = {
+  roundId: null,
   samples: [],
   players: [],
   events: [],
@@ -127,6 +130,7 @@ async function loadRound(target: ReplayTarget, signal: AbortSignal): Promise<Loa
   samples.sort((a, b) => a.tick - b.tick || (a.player_id < b.player_id ? -1 : a.player_id > b.player_id ? 1 : 0));
   const orderedEvents = [...events.values()].sort((a, b) => a.tick - b.tick || a.row_ordinal - b.row_ordinal);
   return {
+    roundId: target.round.round_id,
     samples,
     players,
     events: orderedEvents,
