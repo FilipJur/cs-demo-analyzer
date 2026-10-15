@@ -1,16 +1,23 @@
 """Identity coverage over generation-pinned state.
 
-Dead-entity rule (measured on the retained Inferno demo, Phase 1 gate)
----------------------------------------------------------------------
-A ``player_state`` row with a null ``player_id`` is an observable *dead entity*
-(the engine keeps emitting the corpse entity at its death position). Such rows
-are real observations and are therefore:
+Dead-entity handling (observed on the retained Inferno demo, Phase 1 gate)
+--------------------------------------------------------------------------
+On the tested recording, every ``player_state`` row with a null ``player_id``
+had ``health == 0``: the engine keeps emitting the corpse entity at its death
+position. Those rows are real observations and are therefore:
 
 * **included** in raw counts (``total_observations``, ``null_observations``),
 * **excluded** from live-player operations (they are never "alive" here),
 * **never** re-attached to a player by position, name or ordering — the module
   reads only ``tick``, ``player_id`` and ``health``, so a corpse row that shares
   a position with a living player cannot be mistaken for that player.
+
+That finding is evidence from one recording, not a universal guarantee: other
+demos (POV, bots, other CS2 versions, disconnections, parser edge cases) may
+produce null identities by other means. Null rows with ``health`` data (alive
+or otherwise anomalous) are flagged in ``notes`` and counted in
+``alive_null``/``live_identity_violations`` instead of being assumed to be
+corpses.
 
 "Alive" is defined as ``health > 0``; a null health counts as not alive. On
 healthy data ``alive_null == 0`` and ``live_coverage == 1.0``. A non-empty
@@ -95,18 +102,18 @@ def coverage(pool: GenerationPool, gen: Generation, round_id: int | None = None)
     notes: list[str] = []
     if null_observations:
         if int(values["null_with_health"]) == 0:
-            notes.append(f"null observations {null_observations}, all health==0 (dead entities)")
+            notes.append(f"null observations {null_observations}, all health==0 (dead entities on this data)")
         else:
             notes.append(
                 f"null observations {null_observations}, {int(values['null_with_health'])} of them "
-                "carrying health data (dead entities expected)"
+                "carrying health data (not assumed to be dead entities)"
             )
     else:
         notes.append("no null observations: every state row carries an identified player id")
     if alive_null:
-        notes.append(f"alive-with-null-id violations: {alive_null} (dead-entity rule violated)")
+        notes.append(f"alive-with-null-id violations: {alive_null} (unidentified living rows)")
     notes.append(
-        f"scope {scope}: {total} observations, {alive_total} alive, {total - alive_total} dead entities"
+        f"scope {scope}: {total} observations, {alive_total} alive, {total - alive_total} not alive"
     )
 
     return IdentityCoverage(

@@ -213,6 +213,33 @@ def test_nearby_skips_non_finite_coordinates():
     assert [entry["player_id"] for entry in result] == [PLAYER_B, PLAYER_C]
 
 
+def test_nearby_alive_only_excludes_dead_players_and_reference():
+    rows = nearby_rows()
+    rows[1] = {**rows[1], "health": 0}  # B dies in place: raw geometry still sees him
+    rows[2] = {**rows[2], "health": 0}  # C dies in place as well
+    pool, gen = build(rows)
+    assert [entry["player_id"] for entry in spatial.nearby(pool, gen, 200, PLAYER_A, 1200.0)] == [
+        PLAYER_B,
+        PLAYER_C,
+        PLAYER_D,
+    ]
+    alive = spatial.nearby(pool, gen, 200, PLAYER_A, 1200.0, alive_only=True)
+    assert [entry["player_id"] for entry in alive] == [PLAYER_D]
+    # A dead reference player has no living position to measure from.
+    rows[0] = {**rows[0], "health": 0}
+    pool, gen = build(rows)
+    assert spatial.nearby(pool, gen, 200, PLAYER_A, 1200.0, alive_only=True) == []
+
+
+def test_pair_distance_alive_only_marks_dead_ticks_missing():
+    rows = pair_rows()
+    rows[5] = {**rows[5], "health": 0}  # B dead at 103, still recorded at the death spot
+    pool, gen = build(rows)
+    assert spatial.pair_distance_over_time(pool, gen, PLAYER_A, PLAYER_B, [103])[0]["missing"] is False
+    result = spatial.pair_distance_over_time(pool, gen, PLAYER_A, PLAYER_B, [100, 103], alive_only=True)
+    assert [entry["missing"] for entry in result] == [False, True]
+    assert result[1]["d2d"] is None and result[1]["d3d"] is None
+
 # --------------------------------------------------------------------------- #
 # time_within
 # --------------------------------------------------------------------------- #
@@ -257,3 +284,20 @@ def test_time_within_ignores_non_finite_coordinates():
     pool, gen = build(rows)
     result = spatial.time_within(pool, gen, PLAYER_A, PLAYER_B, 100, 103, 250.0)
     assert result == {"ticks_compared": 3, "ticks_within": 2, "fraction": 2 / 3}
+
+
+def test_time_within_alive_only_skips_dead_ticks():
+    rows = time_within_rows()
+    rows[1] = {**rows[1], "health": 0}  # B dead at 100, inside the radius
+    rows[7] = {**rows[7], "health": 0}  # B dead at 103, outside the radius
+    pool, gen = build(rows)
+    assert spatial.time_within(pool, gen, PLAYER_A, PLAYER_B, 100, 103, 250.0) == {
+        "ticks_compared": 4,
+        "ticks_within": 2,
+        "fraction": 0.5,
+    }
+    assert spatial.time_within(pool, gen, PLAYER_A, PLAYER_B, 100, 103, 250.0, alive_only=True) == {
+        "ticks_compared": 2,
+        "ticks_within": 1,
+        "fraction": 0.5,
+    }

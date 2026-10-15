@@ -10,11 +10,14 @@ Units and conventions
 * This module is geometric only: there is **no line-of-sight**, raycast, visibility
   or nav-mesh logic here.
 
-Interpolation policy
---------------------
-Same as :mod:`.temporal`: only rows that exist for an exact tick are used. Nothing is
-interpolated, and gaps (missing rows, deaths, round breaks) are surfaced via
-``missing`` flags, never silently carried across.
+Living versus recorded positions
+--------------------------------
+``player_state`` keeps emitting rows after death (``health == 0``), so the
+pooled helpers see corpse positions as well as living players. All three report
+raw geometry by default: a nearby corpse still counts as nearby. Pass
+``alive_only=True`` when the question is about active players (support,
+trading, spacing) so ``health == 0`` rows are skipped instead of measured.
+Default behavior is unchanged.
 
 The ``pool`` argument is injected (duck-typed :class:`~.temporal.PoolLike`); this
 module never imports the catalog or a concrete pool.
@@ -121,6 +124,8 @@ def pair_distance_over_time(
     a: str,
     b: str,
     ticks: Sequence[int],
+    *,
+    alive_only: bool = False,
 ) -> list[dict[str, Any]]:
     """Per-tick distances between players ``a`` and ``b``; exact ticks only.
 
@@ -128,6 +133,10 @@ def pair_distance_over_time(
     may repeat). ``missing`` is ``True`` when either player has no row at that tick or
     their coordinates are not finite, in which case both distances are ``None``.
     At most :data:`MAX_PAIR_TICKS` ticks are accepted.
+
+    Raw geometry by default: ``health == 0`` rows still count. With
+    ``alive_only=True`` a tick where either side is not ``health > 0`` reports
+    ``missing=True`` instead of a distance.
     """
     tick_list = [int(tick) for tick in ticks]
     if not tick_list:
@@ -139,10 +148,15 @@ def pair_distance_over_time(
     for offset in range(0, len(tick_list), 512):
         batch = tick_list[offset : offset + 512]
         predicate = (pl.col("tick").is_in(batch)) & pl.col("player_id").is_in([a, b])
+        columns = (
+            ["tick", "player_id", "x", "y", "z", "health"] if alive_only else ["tick", "player_id", "x", "y", "z"]
+        )
+        if alive_only:
+            predicate = predicate & (pl.col("health") > 0)
         frame = pool.read(
             gen,
             "player_state",
-            columns=["tick", "player_id", "x", "y", "z"],
+            columns=columns,
             predicate=predicate,
             limit=_FETCH_LIMIT,
         )
@@ -170,20 +184,31 @@ def nearby(
     tick: int,
     player_id: str,
     radius: float,
+    *,
+    alive_only: bool = False,
 ) -> list[dict[str, Any]]:
     """Other players within ``radius`` planar units of ``player_id`` at the exact ``tick``.
 
     Only players with finite coordinates at that exact tick are considered; the result
     is sorted by ``(d2d, player_id)``. Returns ``[]`` if the reference player is absent.
+
+    Raw geometry by default: ``health == 0`` rows still count. With
+    ``alive_only=True`` only ``health > 0`` rows are considered, and a dead or
+    absent reference player yields ``[]``.
     """
     if radius is None or not math.isfinite(radius) or radius <= 0:
         raise invalid("radius must be a positive finite number")
 
+    columns = ["player_id", "x", "y", "z", "health"] if alive_only else ["player_id", "x", "y", "z"]
+    if alive_only:
+        predicate = (pl.col("tick") == tick) & (pl.col("health") > 0)
+    else:
+        predicate = pl.col("tick") == tick
     frame = pool.read(
         gen,
         "player_state",
-        columns=["player_id", "x", "y", "z"],
-        predicate=pl.col("tick") == tick,
+        columns=columns,
+        predicate=predicate,
         limit=_FETCH_LIMIT,
     )
 
@@ -222,11 +247,17 @@ def time_within(
     start: int,
     end: int,
     radius: float,
+    *,
+    alive_only: bool = False,
 ) -> dict[str, Any]:
     """Fraction of ticks in ``[start, end]`` where ``a`` and ``b`` are within ``radius`` (2D).
 
     Only exact ticks at which *both* players have finite coordinates are compared.
     ``fraction`` is ``None`` when no such tick exists.
+
+    Raw geometry by default: rows with ``health == 0`` still count. With
+    ``alive_only=True`` only ``health > 0`` rows are compared, so ticks where
+    either side is dead are skipped rather than counted.
     """
     if radius is None or not math.isfinite(radius) or radius <= 0:
         raise invalid("radius must be a positive finite number")
@@ -234,7 +265,12 @@ def time_within(
     compared = 0
     within = 0
     if start <= end:
-        frame = _read_pair_spans(pool, gen, a, b, start, end, columns=["tick", "player_id", "x", "y"])
+        state_columns = (
+            ["tick", "player_id", "x", "y", "health"] if alive_only else ["tick", "player_id", "x", "y"]
+        )
+        frame = _read_pair_spans(pool, gen, a, b, start, end, columns=state_columns)
+        if alive_only:
+            frame = frame.filter(pl.col("health") > 0)
         points: dict[tuple[int, str], tuple[Any, Any]] = {}
         ticks: set[int] = set()
         for row in frame.iter_rows(named=True):

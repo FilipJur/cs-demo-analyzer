@@ -23,6 +23,10 @@ Research findings are references, not immutable architectural decisions. Verify 
 
 ## Engineering principles
 
+- **Product value over infrastructure.** Prioritize functionality that enables meaningful gameplay analysis. Do not build supporting infrastructure because it could theoretically become useful.
+- **Evidence-driven development.** Validate assumptions with real demos wherever possible. Separate recorded facts, computed measurements, tactical interpretations, and coaching judgments.
+- **Incremental development.** Implement the smallest coherent functionality needed for the current phase. Avoid speculative frameworks and premature generalization.
+- **Minimal necessary abstraction.** Reuse existing functions and libraries. Introduce an abstraction when it solves an actual dependency, reuse, or complexity problem — not to anticipate future possibilities.
 - Reuse maintained, appropriately licensed libraries before writing custom implementations.
 - Prefer a modular monolith with explicit internal boundaries.
 - Favor simple, composable solutions over premature abstractions.
@@ -32,10 +36,34 @@ Research findings are references, not immutable architectural decisions. Verify 
 - Avoid duplicate implementations of the same functionality.
 - Prefer measurable evidence and reproducible behavior over assumptions.
 - Do not introduce infrastructure without a concrete requirement.
+- **Change justification.** Before adding dependencies, architectural layers, permanent infrastructure, or large test suites, establish a concrete reason they are needed.
+- **Correctness without defensive excess.** Maintain safeguards at trust boundaries, persistence boundaries, and consequential gameplay-data transformations. Avoid repeatedly defending trusted internal interfaces against impossible states.
+- **Controlled scope.** Respect the current phase's objectives. Do not opportunistically implement unrelated features.
+
+## Data semantics
+
+- `player_state` keeps emitting rows after death (`health == 0`). Raw geometric queries include them by default; active-player questions use explicit living-participant filtering (e.g. spatial `alive_only=True`). Never silently count a dead player as available.
+- Null-`player_id` handling is evidence from the tested recording (all null rows had `health == 0` there), not a universal guarantee for every demo type. Flag null rows carrying health data; never invent identities or join unknown players by position.
+
+## Testing
+
+- **Pragmatic testing.** Test important behavior, realistic failure cases, and consequential invariants. Do not optimize for test counts or coverage percentages. Prefer a small number of meaningful tests over large quantities of trivial tests.
+- High value: gameplay data correctness, identity continuity, tick/event sync, spatial math, parser compatibility, data integrity, lifecycle transitions, user-workflow regressions, missing/misleading observations.
+- Low value: near-duplicate validation paths, trivial parameter combinations, dependency-guaranteed behavior, implementation details, mirror mocks, unrealistic fixtures, hypothetical consumers.
+- Validate with real demos where possible (small authored fixtures, consequential edge cases, real-demo checks, manual replay inspection, regression tests for real bugs). No coverage targets, test-count targets, mandatory-per-function tests, or elaborate testing machinery without a demonstrated need.
+
+## Verification (no mandatory CI)
+
+Run appropriate verification locally. Introduce CI only when the project's workflow justifies it.
+
+```bash
+uv run --project backend pytest backend/tests -q
+npm --prefix web run build
+```
 
 ## Development orchestration
 
-- Use subagents for independent, well-defined tasks.
+- Use subagents for genuinely independent, well-defined tasks. Freeze shared contracts before parallel development. Do not maximize agent count for its own sake.
 - The parent orchestrator owns architectural consistency and integration.
 - Assign explicit ownership of shared files and interfaces.
 - Parallelize independent work without sacrificing correctness.

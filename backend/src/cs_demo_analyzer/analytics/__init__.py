@@ -3,8 +3,9 @@
 Public surface for Phase 1: :class:`GenerationPool` opens pinned
 :class:`Generation` handles under the :data:`MAX_MATERIALIZED_ROWS` cap,
 ``coverage``/``live_identity_violations`` measure identity coverage under the
-null-player-id dead-entity rule (see ``identity``), and ``temporal``/``spatial``
-provide verbatim-row time operations and unit-documented spatial math.
+null-player-id dead-entity handling observed on the retained Inferno demo (see
+``identity``), and ``temporal``/``spatial`` provide verbatim-row time
+operations and unit-documented spatial math.
 """
 
 from . import spatial, temporal

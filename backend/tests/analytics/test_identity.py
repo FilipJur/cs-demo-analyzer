@@ -1,8 +1,11 @@
-"""Identity coverage and the null-player-id dead-entity rule.
+"""Identity coverage and null-player-id dead-entity handling.
 
-The rule under test: rows with a null ``player_id`` are real observations of dead
-entities — counted in totals, never alive, never re-attached to a player by
-position, name or ordering.
+The behavior under test: rows with a null ``player_id`` are real observations —
+counted in totals, never alive, never re-attached to a player by position, name
+or ordering. On the retained Inferno demo every null row had ``health == 0``
+(corpse entities); that finding is recorded as evidence from one demo, not a
+universal guarantee, so null rows carrying health data are flagged rather than
+assumed to be corpses.
 """
 
 from __future__ import annotations
@@ -134,7 +137,7 @@ def test_alive_null_rows_are_reported_as_violations_and_lower_live_coverage(
     assert result.alive_identified == 2
     assert result.alive_null == 2
     assert result.live_coverage == pytest.approx(0.5)
-    assert any("dead-entity rule violated" in note for note in result.notes)
+    assert any("unidentified living rows" in note for note in result.notes)
     assert live_identity_violations(harness.pool, gen) == [500]  # distinct ticks
 
 
@@ -287,7 +290,8 @@ def test_null_rows_with_health_data_are_flagged_in_the_notes(harness: AnalyticsH
 
     assert result.alive_null == 1
     assert any("carrying health data" in note for note in result.notes)
-    assert any("dead-entity rule violated" in note for note in result.notes)
+    assert any("not assumed to be dead entities" in note for note in result.notes)
+    assert any("unidentified living rows" in note for note in result.notes)
 
 
 def test_coverage_uses_the_pool_it_was_given(harness: AnalyticsHarness) -> None:
