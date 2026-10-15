@@ -328,6 +328,273 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/analysis-subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analysis Subject
+         * @description The persisted primary subject; unchanged by any per-demo selection.
+         */
+        get: operations["analysis_subject_api_v1_analysis_subject_get"];
+        /**
+         * Set Analysis Subject
+         * @description Persist the primary subject. This never re-ingests or reprocesses a demo.
+         */
+        put: operations["set_analysis_subject_api_v1_analysis_subject_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/subject-participation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Subject Participation
+         * @description The primary subject's participation in catalog demos, bounded and paged.
+         */
+        get: operations["subject_participation_api_v1_subject_participation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/participation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Participation
+         * @description Participation of the primary subject, or of an explicit ``player_id`` override.
+         *
+         *     An override that is missing reports ``absent`` for that override; it is
+         *     never replaced by the configured subject.
+         */
+        get: operations["demo_participation_api_v1_demos__demo_id__participation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/encounters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Encounters
+         * @description Encounters of the pinned generation involving the subject, one bounded page.
+         */
+        get: operations["demo_encounters_api_v1_demos__demo_id__encounters_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/encounters/{encounter_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Encounter
+         * @description One encounter with its anchors, events, evidence refs and subject trajectory.
+         *
+         *     The grouping options must match the ones the encounter was listed with;
+         *     ``encounter_id`` is resolved inside the same grouping.
+         */
+        get: operations["demo_encounter_api_v1_demos__demo_id__encounters__encounter_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Context
+         * @description Context of the subject at exactly ``tick`` of the pinned generation.
+         *
+         *     The requested tick is used verbatim; a tick with no recorded state is
+         *     reported through the snapshot's own coverage fields, never snapped to a
+         *     neighbouring tick. ``cross_pairs`` and ``navigation`` are opt-in because
+         *     both add static-graph work to an otherwise recorded-state read.
+         */
+        get: operations["demo_context_api_v1_demos__demo_id__context_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demos/{demo_id}/encounters/{encounter_id}/context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Encounter Context
+         * @description Context snaps at the encounter's anchors plus the pre-contact offsets.
+         */
+        get: operations["demo_encounter_context_api_v1_demos__demo_id__encounters__encounter_id__context_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geometry/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Geometry Capabilities
+         * @description Which installed geometry components exist for a map, and for which client version.
+         */
+        get: operations["geometry_capabilities_api_v1_geometry_capabilities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geometry/segment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Geometry Segment
+         * @description Static sightline between two world points of the installed map assets.
+         *
+         *     ``unknown``/``unsupported``/``mismatch`` are capability answers, not
+         *     errors: they mean the historical sightline is not proven.
+         */
+        get: operations["geometry_segment_api_v1_geometry_segment_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geometry/navigation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Geometry Navigation
+         * @description Navigation path between two world points, with its own availability status.
+         */
+        get: operations["geometry_navigation_api_v1_geometry_navigation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geometry/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Geometry Location
+         * @description Static facts about one world point: bounds, solidity, floor, nav area.
+         *
+         *     The point is used verbatim. It is a *ground* question (floor height, nav
+         *     area), so callers should pass a recorded player origin rather than an eye
+         *     position; coordinates outside the map report ``in_bounds=false`` instead
+         *     of being corrected.
+         */
+        get: operations["geometry_location_api_v1_geometry_location_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geometry/{map_name}/prepare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Geometry Prepare
+         * @description Explicitly preprocess one map's physics/navigation components.
+         *
+         *     Deliberately a separate write: scrubbing or listing never triggers
+         *     resource extraction, and an unprepared map answers with typed component
+         *     statuses instead of failing.
+         */
+        post: operations["geometry_prepare_api_v1_geometry__map_name__prepare_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/assets/{asset_id}": {
         parameters: {
             query?: never;
@@ -354,9 +621,9 @@ export interface components {
             /** Status */
             status: string;
             /** Job Id */
-            job_id?: string | null;
+            job_id: string | null;
             /** Demo Id */
-            demo_id?: string | null;
+            demo_id: string | null;
         };
         /** AnalyticState */
         AnalyticState: {
@@ -401,6 +668,33 @@ export interface components {
             /** Is Reloading */
             is_reloading: boolean | null;
         };
+        /**
+         * AngularSpread
+         * @description Angular geometry of the directions the subject faces at one tick.
+         *
+         *     Pure geometry over recorded yaw and positions: no risk, threat or awareness
+         *     interpretation is derived from it.
+         */
+        AngularSpread: {
+            /**
+             * Opponent Count
+             * @default 0
+             */
+            opponent_count: number;
+            /** Span Degrees */
+            span_degrees: number | null;
+            /** Max Pair Separation Degrees */
+            max_pair_separation_degrees: number | null;
+            /** Subject Yaw */
+            subject_yaw: number | null;
+            /**
+             * Subject Yaw Recorded
+             * @default false
+             */
+            subject_yaw_recorded: boolean;
+            /** Limitations */
+            limitations: string[];
+        };
         /** Capability */
         Capability: {
             /**
@@ -416,6 +710,402 @@ export interface components {
              */
             note: string;
         };
+        /**
+         * ContextAnchorSnapshot
+         * @description A snapshot taken at one encounter anchor or pre/post-contact offset.
+         */
+        ContextAnchorSnapshot: {
+            /** Name */
+            name: string;
+            /**
+             * Kind
+             * @default computed
+             * @enum {string}
+             */
+            kind: "recorded" | "computed" | "geometry_dependent" | "estimated" | "unsupported";
+            /** Anchor Kind */
+            anchor_kind: string | null;
+            /** Reason */
+            reason: string;
+            /** Requested Tick */
+            requested_tick: number | null;
+            /** Offset Seconds */
+            offset_seconds: number | null;
+            snapshot: components["schemas"]["ContextSnapshot"];
+        };
+        /**
+         * ContextCapabilities
+         * @description Per-snapshot capability report; every field names its source.
+         */
+        ContextCapabilities: {
+            state: components["schemas"]["EvidenceCapability"];
+            geometry: components["schemas"]["EvidenceCapability"];
+            sightlines: components["schemas"]["EvidenceCapability"];
+            navigation: components["schemas"]["EvidenceCapability"];
+            utility: components["schemas"]["EvidenceCapability"];
+            exposure: components["schemas"]["EvidenceCapability"];
+            view_origin: components["schemas"]["EvidenceCapability"];
+            lifecycle: components["schemas"]["EvidenceCapability"];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * ContextCounts
+         * @description Observations at the exact tick, with unknowns kept separate.
+         *
+         *     ``opponent_static_*`` count *active opponent* sightlines only; a dead or
+         *     unclassified player is never counted as a clear or blocked opponent. Every
+         *     ``static_clear``/``static_blocked`` here is scoped to the installed map build
+         *     (:data:`STATIC_SCOPE`): it is a static-geometry reading, not confirmed
+         *     visibility or exposure for the recording.
+         */
+        ContextCounts: {
+            /**
+             * State Rows
+             * @default 0
+             */
+            state_rows: number;
+            /**
+             * Identity Identified
+             * @default 0
+             */
+            identity_identified: number;
+            /**
+             * Identity Null
+             * @default 0
+             */
+            identity_null: number;
+            /**
+             * Identity Null Alive
+             * @default 0
+             */
+            identity_null_alive: number;
+            /**
+             * Living
+             * @default 0
+             */
+            living: number;
+            /**
+             * Dead
+             * @default 0
+             */
+            dead: number;
+            /**
+             * Unknown Health
+             * @default 0
+             */
+            unknown_health: number;
+            /**
+             * Active Relations
+             * @default 0
+             */
+            active_relations: number;
+            /**
+             * Inactive Relations
+             * @default 0
+             */
+            inactive_relations: number;
+            /**
+             * Same Side
+             * @default 0
+             */
+            same_side: number;
+            /**
+             * Opposite Side
+             * @default 0
+             */
+            opposite_side: number;
+            /**
+             * Unknown Side
+             * @default 0
+             */
+            unknown_side: number;
+            /**
+             * Opponent Static Clear
+             * @default 0
+             */
+            opponent_static_clear: number;
+            /**
+             * Opponent Static Blocked
+             * @default 0
+             */
+            opponent_static_blocked: number;
+            /**
+             * Opponent Static Unknown
+             * @default 0
+             */
+            opponent_static_unknown: number;
+            /**
+             * Sightlines Evaluated
+             * @default 0
+             */
+            sightlines_evaluated: number;
+            /**
+             * Sightlines Unavailable
+             * @default 0
+             */
+            sightlines_unavailable: number;
+            /**
+             * Cross Pairs Evaluated
+             * @default 0
+             */
+            cross_pairs_evaluated: number;
+        };
+        /**
+         * ContextPositionChange
+         * @description Observed movement of one player over a bounded exact-tick window.
+         *
+         *     ``dx``/``dy``/``dz``/``displacement_*``/``path_length_2d`` are reported only when
+         *     the living, position-carrying samples form one *contiguous* run on the sampling
+         *     grid inside a single round (``contiguous_living``). A death, a respawn, a missing
+         *     sample or a round boundary breaks the run and the derived metrics stay ``None``
+         *     instead of bridging across it; ``missing_samples``/``dead_samples`` keep the
+         *     counts and ``limitations`` names the break.
+         */
+        ContextPositionChange: {
+            /** Player Id */
+            player_id: string;
+            /** From Tick */
+            from_tick: number;
+            /** To Tick */
+            to_tick: number;
+            /** Stride Ticks */
+            stride_ticks: number;
+            /**
+             * Samples
+             * @default 0
+             */
+            samples: number;
+            /**
+             * Living Samples
+             * @default 0
+             */
+            living_samples: number;
+            /**
+             * Dead Samples
+             * @default 0
+             */
+            dead_samples: number;
+            /**
+             * Missing Samples
+             * @default 0
+             */
+            missing_samples: number;
+            /**
+             * Contiguous Living
+             * @default false
+             */
+            contiguous_living: boolean;
+            /** Dx */
+            dx: number | null;
+            /** Dy */
+            dy: number | null;
+            /** Dz */
+            dz: number | null;
+            /** Displacement 2D */
+            displacement_2d: number | null;
+            /** Displacement 3D */
+            displacement_3d: number | null;
+            /** Path Length 2D */
+            path_length_2d: number | null;
+            /**
+             * Bounded
+             * @default true
+             */
+            bounded: boolean;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * ContextRelation
+         * @description The subject's relationship to one other player at one exact tick.
+         */
+        ContextRelation: {
+            /** Subject Id */
+            subject_id: string;
+            /** Player Id */
+            player_id: string;
+            /**
+             * Relation
+             * @enum {string}
+             */
+            relation: "teammate" | "opponent" | "unknown";
+            /** Subject Side */
+            subject_side: string | null;
+            /** Other Side */
+            other_side: string | null;
+            /**
+             * Active
+             * @default false
+             */
+            active: boolean;
+            /** Inactive Reason */
+            inactive_reason: string | null;
+            /** Distance 2D */
+            distance_2d: number | null;
+            /** Distance 3D */
+            distance_3d: number | null;
+            /** Bearing Degrees */
+            bearing_degrees: number | null;
+            /** Relative Yaw */
+            relative_yaw: number | null;
+            view_origin: components["schemas"]["ViewOrigin"];
+            other_view_origin: components["schemas"]["ViewOrigin"];
+            static_sightline: components["schemas"]["SegmentResult"] | null;
+            /** Static Effective Status */
+            static_effective_status: ("static_clear" | "static_blocked" | "unknown" | "unsupported") | null;
+            navigation: components["schemas"]["NavigationResult"] | null;
+            other_state: components["schemas"]["ContextStateRef"] | null;
+            evidence: components["schemas"]["EvidenceRef"] | null;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * ContextSnapshot
+         * @description Exact-tick state of the subject, its relations and recorded utility.
+         */
+        ContextSnapshot: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Subject Id */
+            subject_id: string;
+            /** Tick */
+            tick: number;
+            /** Round Id */
+            round_id: number | null;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            /** Actual Tick */
+            actual_tick: number | null;
+            /**
+             * Exact
+             * @default false
+             */
+            exact: boolean;
+            /** Gap Ticks */
+            gap_ticks: number | null;
+            subject: components["schemas"]["ContextStateRef"] | null;
+            /**
+             * Subject Alive
+             * @default false
+             */
+            subject_alive: boolean;
+            /** Relations */
+            relations: components["schemas"]["ContextRelation"][];
+            /** Inactive Relations */
+            inactive_relations: components["schemas"]["ContextRelation"][];
+            /** Participants */
+            participants: components["schemas"]["ContextStateRef"][];
+            /** Pair Relations */
+            pair_relations: components["schemas"]["CrossSightline"][];
+            /** Opponent Directions */
+            opponent_directions: components["schemas"]["OpponentDirection"][];
+            angular_spread: components["schemas"]["AngularSpread"];
+            counts: components["schemas"]["ContextCounts"];
+            position_change: components["schemas"]["ContextPositionChange"] | null;
+            /** Utility */
+            utility: components["schemas"]["ContextUtilityFact"][];
+            lifecycle_before: components["schemas"]["LifecycleFact"] | null;
+            lifecycle_after: components["schemas"]["LifecycleFact"] | null;
+            /**
+             * Lifecycle Unattributed Rows
+             * @default 0
+             */
+            lifecycle_unattributed_rows: number;
+            /**
+             * Static Scope
+             * @default installed_map_build
+             */
+            static_scope: string;
+            capabilities: components["schemas"]["ContextCapabilities"];
+            provenance: components["schemas"]["ReconstructionProvenance"];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * ContextStateRef
+         * @description One verbatim ``player_state`` observation, addressed by row ordinal.
+         */
+        ContextStateRef: {
+            /**
+             * Dataset
+             * @default player_state
+             */
+            dataset: string;
+            /** Row Ordinal */
+            row_ordinal: number;
+            /** Tick */
+            tick: number;
+            /** Player Id */
+            player_id: string | null;
+            /** Health */
+            health: number | null;
+            /**
+             * Alive
+             * @default false
+             */
+            alive: boolean;
+            /** Side */
+            side: string | null;
+            /** Is Crouched */
+            is_crouched: boolean | null;
+            /** Is Scoped */
+            is_scoped: boolean | null;
+            /** Active Weapon */
+            active_weapon: string | null;
+            evidence: components["schemas"]["EvidenceRef"] | null;
+        };
+        /**
+         * ContextUtilityFact
+         * @description One recorded utility fact (slice B table row), never inferred.
+         *
+         *     ``semantics_reliable`` is ``False`` when the source cannot promise what the
+         *     row means (throw versus detonation versus expiry, unknown endpoint), in which
+         *     case the interval end is left unresolved. ``evidence`` points at the exact
+         *     source row (``dataset`` = the utility table, its ``row_ordinal``, ``tick`` =
+         *     ``start_tick``, and the round containing that tick), and ``evidence_kind``
+         *     states whether the row is recorded engine state or an upstream reconstruction.
+         */
+        ContextUtilityFact: {
+            /** Kind */
+            kind: string;
+            /** Owner Id */
+            owner_id: string | null;
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number | null;
+            /** X */
+            x: number | null;
+            /** Y */
+            y: number | null;
+            /** Z */
+            z: number | null;
+            /** Site */
+            site: string | null;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            };
+            /**
+             * Semantics Reliable
+             * @default false
+             */
+            semantics_reliable: boolean;
+            /**
+             * Evidence Kind
+             * @default recorded
+             * @enum {string}
+             */
+            evidence_kind: "recorded" | "computed" | "geometry_dependent" | "estimated" | "unsupported";
+            evidence: components["schemas"]["EvidenceRef"] | null;
+            /** Limitations */
+            limitations: string[];
+        };
         /** CoverageResponse */
         CoverageResponse: {
             /** Generation Id */
@@ -428,6 +1118,42 @@ export interface components {
             /** Scope */
             scope: string;
             coverage: components["schemas"]["IdentityCoverage"];
+        };
+        /**
+         * CrossSightline
+         * @description One potential living teammate→opponent sightline at one exact tick.
+         *
+         *     Both endpoints are living recorded players, and the segment runs between
+         *     stance-based (or recorded) eye positions. The result is static geometry scoped
+         *     to the installed map build: it is never a statement about who could see,
+         *     trade, or react to whom.
+         */
+        CrossSightline: {
+            /** Teammate Id */
+            teammate_id: string;
+            /** Opponent Id */
+            opponent_id: string;
+            teammate_origin: components["schemas"]["ViewOrigin"];
+            opponent_origin: components["schemas"]["ViewOrigin"];
+            /** Distance 2D */
+            distance_2d: number | null;
+            /** Distance 3D */
+            distance_3d: number | null;
+            /** Bearing Degrees */
+            bearing_degrees: number | null;
+            /** Relative Yaw */
+            relative_yaw: number | null;
+            static_sightline: components["schemas"]["SegmentResult"] | null;
+            /** Static Effective Status */
+            static_effective_status: ("static_clear" | "static_blocked" | "unknown" | "unsupported") | null;
+            navigation: components["schemas"]["NavigationResult"] | null;
+            /**
+             * Scope
+             * @default installed_map_build
+             */
+            scope: string;
+            /** Limitations */
+            limitations: string[];
         };
         /** DemoDetail */
         DemoDetail: {
@@ -447,15 +1173,15 @@ export interface components {
             /** Created At */
             created_at: string;
             /** Generation Id */
-            generation_id?: string | null;
+            generation_id: string | null;
             /** Manifest Path */
-            manifest_path?: string | null;
+            manifest_path: string | null;
             /** Map Name */
-            map_name?: string | null;
+            map_name: string | null;
             /** Quality */
-            quality?: string | null;
+            quality: string | null;
             /** Warnings */
-            warnings?: string[];
+            warnings: string[];
         };
         /** DistanceResponse */
         DistanceResponse: {
@@ -473,14 +1199,357 @@ export interface components {
             /** Player B */
             player_b: string;
             /** Distance 2D */
-            distance_2d?: number | null;
+            distance_2d: number | null;
             /** Distance 3D */
-            distance_3d?: number | null;
+            distance_3d: number | null;
             /**
              * Missing
              * @default false
              */
             missing: boolean;
+        };
+        /**
+         * EncounterAnchor
+         * @description One anchor inside an encounter.
+         *
+         *     ``observed`` anchors whose kind is in :data:`EVIDENCE_ANCHOR_KINDS`
+         *     (``first_interaction``, ``first_shot``, ``first_damage``,
+         *     ``last_interaction``, ``kill``, ``death``, ``assist``) carry exactly one
+         *     :class:`EvidenceRef` and name the source row, so ``tick`` is the exact
+         *     recorded tick. ``pre_contact``/``post_contact`` and ``resolution`` are
+         *     derived from the grouping configuration and the seed set; they carry
+         *     ``evidence_kind="computed"`` (``resolution`` keeps the recorded death row as
+         *     evidence for the ``subject_death`` rule, in which case its
+         *     ``evidence_kind`` stays ``"recorded"``).
+         *
+         *     An anchor that cannot be observed in this episode (for example no shot was
+         *     recorded) is still returned, with ``status="unavailable"``, ``tick=None``,
+         *     ``evidence_kind="unsupported"`` and no evidence, instead of being omitted or
+         *     given a fabricated tick. ``resolution`` is only set on the ``resolution``
+         *     anchor and states the segmentation rule that ended it.
+         */
+        EncounterAnchor: {
+            /** Anchor Id */
+            anchor_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "first_interaction" | "first_shot" | "first_damage" | "last_interaction" | "kill" | "death" | "assist" | "pre_contact" | "post_contact" | "resolution";
+            /** Tick */
+            tick: number | null;
+            /**
+             * Status
+             * @default observed
+             * @enum {string}
+             */
+            status: "observed" | "unavailable";
+            /**
+             * Evidence Kind
+             * @default recorded
+             * @enum {string}
+             */
+            evidence_kind: "recorded" | "computed" | "geometry_dependent" | "estimated" | "unsupported";
+            /** Player Ids */
+            player_ids: string[];
+            /** Dataset */
+            dataset: string | null;
+            /** Row Ordinal */
+            row_ordinal: number | null;
+            /** Detail */
+            detail: string | null;
+            /** Resolution */
+            resolution: ("subject_death" | "event_gap" | "round_end") | null;
+            /** Evidence */
+            evidence: components["schemas"]["EvidenceRef"][];
+        };
+        /**
+         * EncounterContext
+         * @description Snapshots at the encounter's anchors plus the exposure/utility timeline.
+         */
+        EncounterContext: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Encounter Id */
+            encounter_id: string;
+            /** Round Id */
+            round_id: number;
+            /** Subject Id */
+            subject_id: string;
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number;
+            /** Interaction Start Tick */
+            interaction_start_tick: number | null;
+            /** Interaction End Tick */
+            interaction_end_tick: number | null;
+            /** First Interaction Tick */
+            first_interaction_tick: number | null;
+            /** Snapshots */
+            snapshots: components["schemas"]["ContextAnchorSnapshot"][];
+            subject_track: components["schemas"]["ParticipantTrack"] | null;
+            /** Participant Tracks */
+            participant_tracks: components["schemas"]["ParticipantTrack"][];
+            subject_facing_delta: components["schemas"]["FacingDelta"] | null;
+            exposure: components["schemas"]["EncounterExposure"];
+            /** Utility */
+            utility: components["schemas"]["ContextUtilityFact"][];
+            /** Lifecycle */
+            lifecycle: components["schemas"]["LifecycleFact"][];
+            /**
+             * Lifecycle Unattributed Rows
+             * @default 0
+             */
+            lifecycle_unattributed_rows: number;
+            capabilities: components["schemas"]["ContextCapabilities"];
+            provenance: components["schemas"]["ReconstructionProvenance"];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * EncounterDetail
+         * @description Detail view: ``summary`` plus window context, participants and trajectory.
+         *
+         *     ``summary`` is byte-identical to the same encounter in
+         *     :class:`EncounterList` for the same grouping options.
+         */
+        EncounterDetail: {
+            summary: components["schemas"]["EncounterSummary"];
+            source_window: components["schemas"]["EncounterSourceWindow"];
+            grouping: components["schemas"]["EncounterGrouping"];
+            /** Events */
+            events: components["schemas"]["EncounterEvent"][];
+            /** Participants */
+            participants: components["schemas"]["EncounterParticipant"][];
+            /** Subject Event Count */
+            subject_event_count: number;
+            /** Contextual Event Count */
+            contextual_event_count: number;
+            /** Subject Trajectory */
+            subject_trajectory: components["schemas"]["AnalyticState"][];
+            /** Trajectory Stride */
+            trajectory_stride: number;
+            /** Trajectory Missing Ranges */
+            trajectory_missing_ranges: number[][];
+            provenance: components["schemas"]["ReconstructionProvenance"];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * EncounterEvent
+         * @description One verbatim event row inside an encounter window.
+         */
+        EncounterEvent: {
+            /**
+             * Dataset
+             * @enum {string}
+             */
+            dataset: "kills" | "damages" | "shots" | "bomb";
+            /** Row Ordinal */
+            row_ordinal: number;
+            /** Tick */
+            tick: number;
+            /** Round Id */
+            round_id: number;
+            /** Actor Id */
+            actor_id: string | null;
+            /** Target Id */
+            target_id: string | null;
+            /** Assister Id */
+            assister_id: string | null;
+            /** Weapon */
+            weapon: string | null;
+            /** Headshot */
+            headshot: boolean | null;
+            /** Damage Health */
+            damage_health: number | null;
+            /** Damage Armor */
+            damage_armor: number | null;
+            /** Detail */
+            detail: string | null;
+            /** Subject Role */
+            subject_role: ("actor" | "target" | "assister") | null;
+            /**
+             * Subject Involved
+             * @default false
+             */
+            subject_involved: boolean;
+            /**
+             * Contextual
+             * @default false
+             */
+            contextual: boolean;
+            evidence: components["schemas"]["EvidenceRef"];
+        };
+        /**
+         * EncounterExposure
+         * @description Qualified earliest exposure for the encounter, or why it is unknown.
+         *
+         *     ``qualified`` requires both a known static sightline and both endpoints
+         *     observed alive at that exact tick; the scan bounds and every unknown dynamic
+         *     are reported next to the result.
+         */
+        EncounterExposure: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "qualified" | "unknown" | "unsupported" | "not_applicable";
+            /** Earliest Exposure Tick */
+            earliest_exposure_tick: number | null;
+            /** Earliest Exposure Player Id */
+            earliest_exposure_player_id: string | null;
+            /** Opponents */
+            opponents: components["schemas"]["OpponentExposure"][];
+            sampling: components["schemas"]["ExposureSampling"];
+            /** Unknown Dynamics */
+            unknown_dynamics: string[];
+            /** Mismatches */
+            mismatches: string[];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * EncounterGrouping
+         * @description Resolved grouping configuration; ticks are derived from ``tick_rate_hz``.
+         */
+        EncounterGrouping: {
+            /** Gap Seconds */
+            gap_seconds: number;
+            /** Pre Seconds */
+            pre_seconds: number;
+            /** Post Seconds */
+            post_seconds: number;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            /** Gap Ticks */
+            gap_ticks: number;
+            /** Pre Ticks */
+            pre_ticks: number;
+            /** Post Ticks */
+            post_ticks: number;
+        };
+        /**
+         * EncounterList
+         * @description One page of encounters for a generation and subject.
+         */
+        EncounterList: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Subject Id */
+            subject_id: string;
+            grouping: components["schemas"]["EncounterGrouping"];
+            /** Round Id */
+            round_id: number | null;
+            /** Total */
+            total: number;
+            /** Offset */
+            offset: number;
+            /** Limit */
+            limit: number;
+            /** Encounters */
+            encounters: components["schemas"]["EncounterSummary"][];
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * EncounterParticipant
+         * @description A player involved in an encounter, with the relation recorded at contact.
+         */
+        EncounterParticipant: {
+            /** Player Id */
+            player_id: string;
+            /**
+             * Relation
+             * @enum {string}
+             */
+            relation: "teammate" | "opponent" | "unknown";
+            /** Side */
+            side: string | null;
+            /** Subject Side */
+            subject_side: string | null;
+            /** Roles */
+            roles: string[];
+            /** First Seen Tick */
+            first_seen_tick: number;
+            /** Last Seen Tick */
+            last_seen_tick: number;
+            /** Event Count */
+            event_count: number;
+            /** Direct */
+            direct: boolean;
+        };
+        /**
+         * EncounterSourceWindow
+         * @description Bounds of the read window, with explicit clipping against the round.
+         */
+        EncounterSourceWindow: {
+            /** Round Id */
+            round_id: number;
+            /** Round Start Tick */
+            round_start_tick: number;
+            /** Round End Tick */
+            round_end_tick: number;
+            /** Window Start Tick */
+            window_start_tick: number;
+            /** Window End Tick */
+            window_end_tick: number;
+            /** Truncated Start */
+            truncated_start: boolean;
+            /** Truncated End */
+            truncated_end: boolean;
+        };
+        /**
+         * EncounterSummary
+         * @description List-level encounter record: derivable without reading ``player_state``.
+         */
+        EncounterSummary: {
+            /** Encounter Id */
+            encounter_id: string;
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Round Id */
+            round_id: number;
+            /** Subject Id */
+            subject_id: string;
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number;
+            /** First Interaction Tick */
+            first_interaction_tick: number;
+            /** Last Interaction Tick */
+            last_interaction_tick: number;
+            /** Participant Ids */
+            participant_ids: string[];
+            /** Anchors */
+            anchors: components["schemas"]["EncounterAnchor"][];
+            /** Event Count */
+            event_count: number;
+            /** Kill Count */
+            kill_count: number;
+            /** Death Count */
+            death_count: number;
+            /** Assist Count */
+            assist_count: number;
+            /** Subject Died */
+            subject_died: boolean;
+            grouping: components["schemas"]["EncounterGrouping"];
+            /** Limitations */
+            limitations: string[];
         };
         /** ErrorResponse */
         ErrorResponse: {
@@ -496,7 +1565,7 @@ export interface components {
              */
             retryable: boolean;
             /** Job Id */
-            job_id?: string | null;
+            job_id: string | null;
         };
         /** EventWindowResponse */
         EventWindowResponse: {
@@ -533,6 +1602,86 @@ export interface components {
             /** Events */
             events: components["schemas"]["TimelineEvent"][];
         };
+        /** EvidenceCapability */
+        EvidenceCapability: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "available" | "partial" | "unavailable" | "unsupported";
+            /** Source */
+            source: string;
+            /** Limitations */
+            limitations: string[];
+        };
+        /** EvidenceRef */
+        EvidenceRef: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Dataset */
+            dataset: string;
+            /** Row Ordinal */
+            row_ordinal: number;
+            /** Tick */
+            tick: number;
+            /** Round Id */
+            round_id: number | null;
+            /** Player Ids */
+            player_ids: string[];
+        };
+        /**
+         * ExposureSampling
+         * @description Bounds and the actual grid of the exposure scan.
+         *
+         *     ``ticks`` is the exact sampled grid, which always includes ``end_tick``, so a
+         *     result can never claim more coverage than was read.
+         */
+        ExposureSampling: {
+            /** Start Tick */
+            start_tick: number;
+            /** End Tick */
+            end_tick: number;
+            /** Stride Ticks */
+            stride_ticks: number;
+            /**
+             * Samples
+             * @default 0
+             */
+            samples: number;
+            /** Ticks */
+            ticks: number[];
+            /**
+             * Subject Alive Samples
+             * @default 0
+             */
+            subject_alive_samples: number;
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+        };
+        /**
+         * FacingDelta
+         * @description Change in the subject's recorded view yaw between two living samples.
+         */
+        FacingDelta: {
+            /** From Tick */
+            from_tick: number;
+            /** To Tick */
+            to_tick: number;
+            /** Yaw From */
+            yaw_from: number;
+            /** Yaw To */
+            yaw_to: number;
+            /** Delta Degrees */
+            delta_degrees: number;
+            /** Stride Ticks */
+            stride_ticks: number;
+            /** Limitations */
+            limitations: string[];
+        };
         /** Fingerprint */
         Fingerprint: {
             /** Device */
@@ -545,6 +1694,109 @@ export interface components {
             mtime_ns: number;
             /** Ctime Ns */
             ctime_ns: number;
+        };
+        /**
+         * GeometryAsset
+         * @description Asset provenance for one prepared map at one installed client version.
+         */
+        GeometryAsset: {
+            /** Asset Id */
+            asset_id: string;
+            /** Map Name */
+            map_name: string;
+            /** Vpk */
+            vpk: string;
+            /** Client Version */
+            client_version: string;
+            /** Parser Version */
+            parser_version: string;
+            /** Tool */
+            tool: string;
+            /** Sources */
+            sources: components["schemas"]["GeometrySource"][];
+        };
+        /**
+         * GeometryCapabilities
+         * @description What static geometry is available for one map, without querying it.
+         */
+        GeometryCapabilities: {
+            /** Map Name */
+            map_name: string;
+            /** Prepared */
+            prepared: boolean;
+            physics: components["schemas"]["GeometryComponent"];
+            navigation: components["schemas"]["GeometryComponent"];
+            /** Bounds Min */
+            bounds_min: [
+                number,
+                number,
+                number
+            ] | null;
+            /** Bounds Max */
+            bounds_max: [
+                number,
+                number,
+                number
+            ] | null;
+            /**
+             * Triangle Count
+             * @default 0
+             */
+            triangle_count: number;
+            /**
+             * Nav Area Count
+             * @default 0
+             */
+            nav_area_count: number;
+            asset: components["schemas"]["GeometryAsset"] | null;
+            /** Asset Id */
+            asset_id: string | null;
+            /**
+             * Match Status
+             * @default unknown
+             * @enum {string}
+             */
+            match_status: "exact" | "mismatch" | "unknown";
+            /** Install Client Version */
+            install_client_version: string | null;
+            /** Demo Client Version */
+            demo_client_version: string | null;
+            /** Preprocessing Ms */
+            preprocessing_ms: number | null;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * GeometryComponent
+         * @description Capability of one geometry component (collision physics or navigation).
+         */
+        GeometryComponent: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "available" | "partial" | "unavailable" | "unsupported";
+            /** Source */
+            source: string;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * GeometrySource
+         * @description One extracted VPK entry backing a map's geometry cache.
+         */
+        GeometrySource: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "vmap" | "nav" | "physics" | "glb";
+            /** Entry */
+            entry: string;
+            /** Byte Size */
+            byte_size: number;
+            /** Sha256 */
+            sha256: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -582,9 +1834,9 @@ export interface components {
             /** Alive Null */
             alive_null: number;
             /** Live Coverage */
-            live_coverage?: number | null;
+            live_coverage: number | null;
             /** Notes */
-            notes?: string[];
+            notes: string[];
         };
         /** ImportRequest */
         ImportRequest: {
@@ -618,9 +1870,43 @@ export interface components {
             created_at: string;
             /** Updated At */
             updated_at: string;
-            error?: components["schemas"]["ErrorResponse"] | null;
+            error: components["schemas"]["ErrorResponse"] | null;
             /** Worker Pid */
-            worker_pid?: number | null;
+            worker_pid: number | null;
+        };
+        /**
+         * LifecycleFact
+         * @description One recorded connect/disconnect/spawn/team-change row (slice B ``player_lifecycle``).
+         *
+         *     Only rows whose ``player_id`` is resolved to an account are attributable to a
+         *     player: the source records a SteamID64 for disconnects only, so a row with a
+         *     null ``player_id`` is counted and never guessed onto a subject by slot.
+         */
+        LifecycleFact: {
+            /** Tick */
+            tick: number;
+            /** Kind */
+            kind: string;
+            /** Player Id */
+            player_id: string | null;
+            /** User Slot */
+            user_slot: string | null;
+            /** Team */
+            team: string | null;
+            /** Previous Team */
+            previous_team: string | null;
+            /** Is Bot */
+            is_bot: boolean | null;
+            /** Reason Code */
+            reason_code: number | null;
+            /** Ever Fully Connected */
+            ever_fully_connected: boolean | null;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            };
+            /** Limitations */
+            limitations: string[];
         };
         /** Manifest */
         Manifest: {
@@ -639,9 +1925,9 @@ export interface components {
             /**
              * Profile
              * @default foundation-v1
-             * @constant
+             * @enum {string}
              */
-            profile: "foundation-v1";
+            profile: "foundation-v1" | "reconstruction-v1";
             /**
              * Profile Key
              * @default foundation-v1:awpy-3.0.0:schema-1:normalizer-1
@@ -658,7 +1944,7 @@ export interface components {
              */
             normalizer_version: string;
             /** Created At */
-            created_at?: string;
+            created_at: string;
             /** Source Size */
             source_size: number;
             /** Map Name */
@@ -694,19 +1980,19 @@ export interface components {
              */
             quality: "complete" | "partial";
             /** Demo Client Version */
-            demo_client_version?: string | null;
+            demo_client_version: string | null;
             /** Demo Version Source */
-            demo_version_source?: string | null;
+            demo_version_source: string | null;
             /** Tables */
             tables: {
                 [key: string]: components["schemas"]["TableDescriptor"];
             };
             /** Capabilities */
-            capabilities?: {
+            capabilities: {
                 [key: string]: components["schemas"]["Capability"];
             };
             /** Warnings */
-            warnings?: string[];
+            warnings: string[];
         };
         /**
          * MultiQueryRequest
@@ -743,12 +2029,12 @@ export interface components {
             /** Demo Id */
             demo_id: string;
             /** Generation Id */
-            generation_id?: string | null;
+            generation_id: string | null;
             /** Result */
-            result?: {
+            result: {
                 [key: string]: unknown;
             } | null;
-            error?: components["schemas"]["ErrorResponse"] | null;
+            error: components["schemas"]["ErrorResponse"] | null;
         };
         /**
          * MultiQuerySelection
@@ -760,16 +2046,305 @@ export interface components {
             /** Generation Id */
             generation_id?: string | null;
         };
+        /**
+         * NavigationResult
+         * @description Static navigation answer for one segment.
+         *
+         *     ``available`` carries a path; ``unavailable`` means the map has nav data but
+         *     the endpoints do not connect; ``unsupported`` means no usable nav source.
+         */
+        NavigationResult: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "available" | "unavailable" | "unsupported";
+            /** Start */
+            start: [
+                number,
+                number,
+                number
+            ];
+            /** End */
+            end: [
+                number,
+                number,
+                number
+            ];
+            /** Direct Distance */
+            direct_distance: number;
+            /** Path Distance */
+            path_distance: number | null;
+            /** Connected */
+            connected: boolean | null;
+            /** Path */
+            path: [
+                number,
+                number,
+                number
+            ][];
+            /** Area Ids */
+            area_ids: number[];
+            /** Asset Id */
+            asset_id: string | null;
+            /**
+             * Match Status
+             * @default unknown
+             * @enum {string}
+             */
+            match_status: "exact" | "mismatch" | "unknown";
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * OpponentDirection
+         * @description Direction from the subject to one living opponent at the exact tick.
+         */
+        OpponentDirection: {
+            /** Player Id */
+            player_id: string;
+            /** Bearing Degrees */
+            bearing_degrees: number | null;
+            /** Relative Yaw */
+            relative_yaw: number | null;
+        };
+        /**
+         * OpponentExposure
+         * @description Per-opponent sightline scan inside the encounter window.
+         */
+        OpponentExposure: {
+            /** Player Id */
+            player_id: string;
+            /**
+             * Relation
+             * @default opponent
+             * @enum {string}
+             */
+            relation: "teammate" | "opponent" | "unknown";
+            /** First Alive Tick */
+            first_alive_tick: number | null;
+            /** Earliest Clear Tick */
+            earliest_clear_tick: number | null;
+            /**
+             * Checked Ticks
+             * @default 0
+             */
+            checked_ticks: number;
+            /**
+             * Clear Ticks
+             * @default 0
+             */
+            clear_ticks: number;
+            /**
+             * Blocked Ticks
+             * @default 0
+             */
+            blocked_ticks: number;
+            /**
+             * Unknown Ticks
+             * @default 0
+             */
+            unknown_ticks: number;
+            /**
+             * Mismatched Ticks
+             * @default 0
+             */
+            mismatched_ticks: number;
+            /**
+             * Missing Ticks
+             * @default 0
+             */
+            missing_ticks: number;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * ParticipantTrack
+         * @description A bounded, evenly strided sample track for one participant.
+         *
+         *     Samples are verbatim ``player_state`` rows; missing grid ticks are reported as
+         *     ``missing_samples`` and never filled.
+         */
+        ParticipantTrack: {
+            /** Player Id */
+            player_id: string;
+            /**
+             * Relation
+             * @default unknown
+             * @enum {string}
+             */
+            relation: "teammate" | "opponent" | "unknown";
+            /** Side */
+            side: string | null;
+            /**
+             * Is Subject
+             * @default false
+             */
+            is_subject: boolean;
+            /**
+             * Stride Ticks
+             * @default 1
+             */
+            stride_ticks: number;
+            /** From Tick */
+            from_tick: number | null;
+            /** To Tick */
+            to_tick: number | null;
+            /** Samples */
+            samples: components["schemas"]["TrajectorySample"][];
+            /**
+             * Missing Samples
+             * @default 0
+             */
+            missing_samples: number;
+            /** Limitations */
+            limitations: string[];
+        };
+        /**
+         * Participation
+         * @description What one recording says about the subject (or the explicit override).
+         */
+        Participation: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string | null;
+            /** Steam Id */
+            steam_id: string;
+            /** Player Id */
+            player_id: string | null;
+            /**
+             * Player Id Source
+             * @enum {string}
+             */
+            player_id_source: "config" | "override";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "present" | "absent" | "unresolved" | "not_ready";
+            /** In Roster */
+            in_roster: boolean;
+            /** Map Name */
+            map_name: string | null;
+            /** Demo Client Version */
+            demo_client_version: string | null;
+            /** Recording Kind */
+            recording_kind: string | null;
+            /** Quality */
+            quality: string | null;
+            /** Limitations */
+            limitations: string[];
+            measurements: components["schemas"]["ParticipationMeasurements"] | null;
+        };
+        /**
+         * ParticipationMeasurements
+         * @description Recorded measurements for one subject in one generation.
+         *
+         *     Every count is derived from the generation's own tables with bounded
+         *     aggregations; ``None`` means "not computable from this recording" and is
+         *     never substituted by ``0``. ``health_unknown_rows`` counts rows whose health
+         *     is null — they are neither alive nor dead.
+         */
+        ParticipationMeasurements: {
+            /** Tick Rate Hz */
+            tick_rate_hz: number;
+            /** Rounds Total */
+            rounds_total: number;
+            /** Rounds With Subject */
+            rounds_with_subject: number;
+            /** Rounds Alive */
+            rounds_alive: number;
+            /** First Tick */
+            first_tick: number | null;
+            /** Last Tick */
+            last_tick: number | null;
+            /** Rows Outside Rounds */
+            rows_outside_rounds: number;
+            /** State Rows */
+            state_rows: number;
+            /** Alive Rows */
+            alive_rows: number;
+            /** Dead Rows */
+            dead_rows: number;
+            /** Health Unknown Rows */
+            health_unknown_rows: number;
+            /** Null Identity Rows */
+            null_identity_rows: number;
+            /** Position Rows */
+            position_rows: number;
+            /** Position Missing */
+            position_missing: number;
+            /** Angle Anomalies */
+            angle_anomalies: number;
+            /** Health Anomalies */
+            health_anomalies: number;
+            /** Kills */
+            kills: number;
+            /** Deaths */
+            deaths: number;
+            /** Assists */
+            assists: number;
+            /** Damages Dealt */
+            damages_dealt: number;
+            /** Damage Taken */
+            damage_taken: number;
+            /** Shots */
+            shots: number;
+            /** Bomb Events */
+            bomb_events: number;
+            /** Events Outside Rounds */
+            events_outside_rounds: number;
+            /** Replay Available */
+            replay_available: boolean;
+        };
+        /**
+         * PointLocation
+         * @description Static location facts for one world-space point.
+         *
+         *     ``in_bounds``/``inside_solid`` are ``None`` when no collision data is
+         *     available: absence of geometry is unknown, never "outside" or "clear".
+         */
+        PointLocation: {
+            /** Point */
+            point: [
+                number,
+                number,
+                number
+            ];
+            /** In Bounds */
+            in_bounds: boolean | null;
+            /** Inside Solid */
+            inside_solid: boolean | null;
+            /** Floor Z */
+            floor_z: number | null;
+            /** Floor Distance */
+            floor_distance: number | null;
+            /** Clearance Up */
+            clearance_up: number | null;
+            /** Nav Area Id */
+            nav_area_id: number | null;
+            /** Asset Id */
+            asset_id: string | null;
+            /**
+             * Match Status
+             * @default unknown
+             * @enum {string}
+             */
+            match_status: "exact" | "mismatch" | "unknown";
+            /** Limitations */
+            limitations: string[];
+        };
         /** RadarDescriptor */
         RadarDescriptor: {
             /** Asset Id */
-            asset_id?: string | null;
+            asset_id: string | null;
             /** Map Name */
             map_name: string;
             /** Installed Client Version */
-            installed_client_version?: string | null;
+            installed_client_version: string | null;
             /** Demo Client Version */
-            demo_client_version?: string | null;
+            demo_client_version: string | null;
             /**
              * Match Status
              * @default unknown
@@ -787,21 +2362,54 @@ export interface components {
              */
             height: number;
             /** Pos X */
-            pos_x?: number | null;
+            pos_x: number | null;
             /** Pos Y */
-            pos_y?: number | null;
+            pos_y: number | null;
             /** Scale */
-            scale?: number | null;
+            scale: number | null;
             /** Rotate */
-            rotate?: number | null;
+            rotate: number | null;
             /** Zoom */
-            zoom?: number | null;
+            zoom: number | null;
             /** Levels */
-            levels?: {
+            levels: {
                 [key: string]: unknown;
             }[];
             /** Warning */
-            warning?: string | null;
+            warning: string | null;
+        };
+        /** ReconstructionProvenance */
+        ReconstructionProvenance: {
+            /** Demo Id */
+            demo_id: string;
+            /** Generation Id */
+            generation_id: string;
+            /** Profile Key */
+            profile_key: string;
+            /** Method */
+            method: string;
+            /** Method Version */
+            method_version: string;
+            /** Map Name */
+            map_name: string;
+            /** Demo Client Version */
+            demo_client_version: string | null;
+            /** Map Asset Id */
+            map_asset_id: string | null;
+            /**
+             * Map Match Status
+             * @default unknown
+             * @enum {string}
+             */
+            map_match_status: "exact" | "mismatch" | "unknown";
+            /**
+             * Information Scope
+             * @default omniscient_replay
+             * @constant
+             */
+            information_scope: "omniscient_replay";
+            /** Limitations */
+            limitations: string[];
         };
         /** ReplayChunk */
         ReplayChunk: {
@@ -899,7 +2507,7 @@ export interface components {
              */
             available: boolean;
             /** Error */
-            error?: string | null;
+            error: string | null;
         };
         /** RootRequest */
         RootRequest: {
@@ -942,16 +2550,69 @@ export interface components {
             /** Rounds */
             rounds: components["schemas"]["RoundRecord"][];
         };
+        /**
+         * SegmentResult
+         * @description Static collision result for one world-space segment.
+         */
+        SegmentResult: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "static_clear" | "static_blocked" | "unknown" | "unsupported";
+            /** Start */
+            start: [
+                number,
+                number,
+                number
+            ];
+            /** End */
+            end: [
+                number,
+                number,
+                number
+            ];
+            /** Length */
+            length: number;
+            /** Hit Distance */
+            hit_distance: number | null;
+            /** Hit Point */
+            hit_point: [
+                number,
+                number,
+                number
+            ] | null;
+            /** Hit Normal */
+            hit_normal: [
+                number,
+                number,
+                number
+            ] | null;
+            /** Surface */
+            surface: string | null;
+            /** Source */
+            source: string | null;
+            /** Asset Id */
+            asset_id: string | null;
+            /**
+             * Match Status
+             * @default unknown
+             * @enum {string}
+             */
+            match_status: "exact" | "mismatch" | "unknown";
+            /** Limitations */
+            limitations: string[];
+        };
         /** SourceRecord */
         SourceRecord: {
             /** Path */
             path: string;
-            fingerprint?: components["schemas"]["Fingerprint"] | null;
+            fingerprint: components["schemas"]["Fingerprint"] | null;
             /** Demo Id */
-            demo_id?: string | null;
+            demo_id: string | null;
             /** Status */
             status: string;
-            error?: components["schemas"]["ErrorResponse"] | null;
+            error: components["schemas"]["ErrorResponse"] | null;
             /** Updated At */
             updated_at: string;
         };
@@ -971,11 +2632,40 @@ export interface components {
             /** Actual Tick */
             actual_tick: number | null;
             /** Gap Ticks */
-            gap_ticks?: number | null;
+            gap_ticks: number | null;
             /** Exact */
             exact: boolean;
             /** States */
             states: components["schemas"]["AnalyticState"][];
+        };
+        /**
+         * SubjectConfig
+         * @description The configured analysis subject.
+         *
+         *     ``player_id`` is the canonical id for ``steam_id``; it is ``None`` only when
+         *     the persisted value is not a valid SteamID64 (a corrupted setting row), which
+         *     downstream participation reports as ``unresolved`` rather than silently
+         *     substituting another player.
+         */
+        SubjectConfig: {
+            /** Steam Id */
+            steam_id: string;
+            /** Player Id */
+            player_id: string | null;
+            /** Updated At */
+            updated_at: string;
+        };
+        /**
+         * SubjectRequest
+         * @description Body of ``PUT /api/v1/analysis-subject``.
+         *
+         *     The value is passed to ``SubjectService.set`` verbatim; the service owns
+         *     SteamID64 validation (17-digit positive account id) and rejects anything
+         *     else with ``INVALID_ARGUMENT``.
+         */
+        SubjectRequest: {
+            /** Steam Id */
+            steam_id: string;
         };
         /** TableDescriptor */
         TableDescriptor: {
@@ -1000,11 +2690,11 @@ export interface components {
             /** Tick */
             tick: number;
             /** Actor1 */
-            actor1?: string | null;
+            actor1: string | null;
             /** Actor2 */
-            actor2?: string | null;
+            actor2: string | null;
             /** Detail */
-            detail?: string | null;
+            detail: string | null;
         };
         /** TrajectoryResponse */
         TrajectoryResponse: {
@@ -1032,6 +2722,24 @@ export interface components {
             /** States */
             states: components["schemas"]["AnalyticState"][];
         };
+        /**
+         * TrajectorySample
+         * @description One verbatim recorded position sample of a tracked player.
+         */
+        TrajectorySample: {
+            /** Tick */
+            tick: number;
+            /** X */
+            x: number | null;
+            /** Y */
+            y: number | null;
+            /** Z */
+            z: number | null;
+            /** Yaw */
+            yaw: number | null;
+            /** Health */
+            health: number | null;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -1044,6 +2752,47 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /**
+         * ViewOrigin
+         * @description Where a player's eye is taken to be, and how that was established.
+         *
+         *     ``recorded`` means the generation itself carries an observed view origin, and
+         *     then — and only then — ``qualified`` is ``True``. Every other mode is an
+         *     explicitly unqualified estimate derived from the stance recorded at that tick,
+         *     never a measurement, so a sightline built from it always keeps its endpoint
+         *     limitation.
+         */
+        ViewOrigin: {
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "recorded" | "estimated_standing" | "estimated_crouched" | "unknown";
+            /** X */
+            x: number | null;
+            /** Y */
+            y: number | null;
+            /** Z */
+            z: number | null;
+            /** Yaw */
+            yaw: number | null;
+            /** Pitch */
+            pitch: number | null;
+            /** Height Units */
+            height_units: number | null;
+            /**
+             * Qualified
+             * @default false
+             */
+            qualified: boolean;
+            /**
+             * Source
+             * @default player_state
+             */
+            source: string;
+            /** Limitations */
+            limitations: string[];
         };
     };
     responses: never;
@@ -2120,6 +3869,745 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MultiQueryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    analysis_subject_api_v1_analysis_subject_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectConfig"];
+                };
+            };
+        };
+    };
+    set_analysis_subject_api_v1_analysis_subject_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubjectRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectConfig"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    subject_participation_api_v1_subject_participation_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Participation"][];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    demo_participation_api_v1_demos__demo_id__participation_get: {
+        parameters: {
+            query?: {
+                generation_id?: string | null;
+                player_id?: string | null;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Participation"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    demo_encounters_api_v1_demos__demo_id__encounters_get: {
+        parameters: {
+            query?: {
+                generation_id?: string | null;
+                /** @description Recording identity key; defaults to the configured subject when present */
+                subject_id?: string | null;
+                round_id?: number | null;
+                limit?: number;
+                offset?: number;
+                gap_seconds?: number;
+                pre_seconds?: number;
+                post_seconds?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterList"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    demo_encounter_api_v1_demos__demo_id__encounters__encounter_id__get: {
+        parameters: {
+            query?: {
+                generation_id?: string | null;
+                subject_id?: string | null;
+                gap_seconds?: number;
+                pre_seconds?: number;
+                post_seconds?: number;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterDetail"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    demo_context_api_v1_demos__demo_id__context_get: {
+        parameters: {
+            query: {
+                tick: number;
+                generation_id?: string | null;
+                subject_id?: string | null;
+                /** @description Also resolve living teammate-to-opponent potential sightlines at this tick */
+                cross_pairs?: boolean;
+                /** @description Also resolve navigation-graph estimates for the subject's relations */
+                navigation?: boolean;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContextSnapshot"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    demo_encounter_context_api_v1_demos__demo_id__encounters__encounter_id__context_get: {
+        parameters: {
+            query?: {
+                generation_id?: string | null;
+                subject_id?: string | null;
+                gap_seconds?: number;
+                pre_seconds?: number;
+                post_seconds?: number;
+                /** @description Also resolve navigation-graph estimates for the subject's relations */
+                navigation?: boolean;
+            };
+            header?: never;
+            path: {
+                demo_id: string;
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterContext"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Insufficient Storage */
+            507: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    geometry_capabilities_api_v1_geometry_capabilities_get: {
+        parameters: {
+            query: {
+                map_name: string;
+                demo_client_version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeometryCapabilities"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geometry_segment_api_v1_geometry_segment_get: {
+        parameters: {
+            query: {
+                map_name: string;
+                start_x: number;
+                start_y: number;
+                start_z: number;
+                end_x: number;
+                end_y: number;
+                end_z: number;
+                demo_client_version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SegmentResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geometry_navigation_api_v1_geometry_navigation_get: {
+        parameters: {
+            query: {
+                map_name: string;
+                start_x: number;
+                start_y: number;
+                start_z: number;
+                end_x: number;
+                end_y: number;
+                end_z: number;
+                demo_client_version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NavigationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geometry_location_api_v1_geometry_location_get: {
+        parameters: {
+            query: {
+                map_name: string;
+                x: number;
+                y: number;
+                z: number;
+                demo_client_version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PointLocation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geometry_prepare_api_v1_geometry__map_name__prepare_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                map_name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeometryCapabilities"];
                 };
             };
             /** @description Bad Request */

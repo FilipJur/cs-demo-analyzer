@@ -1660,6 +1660,1461 @@
         }
       }
     },
+    "/api/v1/analysis-subject": {
+      "get": {
+        "summary": "Analysis Subject",
+        "description": "The persisted primary subject; unchanged by any per-demo selection.",
+        "operationId": "analysis_subject_api_v1_analysis_subject_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubjectConfig"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Set Analysis Subject",
+        "description": "Persist the primary subject. This never re-ingests or reprocesses a demo.",
+        "operationId": "set_analysis_subject_api_v1_analysis_subject_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubjectConfig"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "507": {
+            "description": "Insufficient Storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/subject-participation": {
+      "get": {
+        "summary": "Subject Participation",
+        "description": "The primary subject's participation in catalog demos, bounded and paged.",
+        "operationId": "subject_participation_api_v1_subject_participation_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Participation"
+                  },
+                  "title": "Response Subject Participation Api V1 Subject Participation Get"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demos/{demo_id}/participation": {
+      "get": {
+        "summary": "Demo Participation",
+        "description": "Participation of the primary subject, or of an explicit ``player_id`` override.\n\nAn override that is missing reports ``absent`` for that override; it is\nnever replaced by the configured subject.",
+        "operationId": "demo_participation_api_v1_demos__demo_id__participation_get",
+        "parameters": [
+          {
+            "name": "demo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Demo Id"
+            }
+          },
+          {
+            "name": "generation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Generation Id"
+            }
+          },
+          {
+            "name": "player_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Player Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participation"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demos/{demo_id}/encounters": {
+      "get": {
+        "summary": "Demo Encounters",
+        "description": "Encounters of the pinned generation involving the subject, one bounded page.",
+        "operationId": "demo_encounters_api_v1_demos__demo_id__encounters_get",
+        "parameters": [
+          {
+            "name": "demo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Demo Id"
+            }
+          },
+          {
+            "name": "generation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Generation Id"
+            }
+          },
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Recording identity key; defaults to the configured subject when present",
+              "title": "Subject Id"
+            },
+            "description": "Recording identity key; defaults to the configured subject when present"
+          },
+          {
+            "name": "round_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Round Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "gap_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Gap Seconds"
+            }
+          },
+          {
+            "name": "pre_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Pre Seconds"
+            }
+          },
+          {
+            "name": "post_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 1.0,
+              "title": "Post Seconds"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterList"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demos/{demo_id}/encounters/{encounter_id}": {
+      "get": {
+        "summary": "Demo Encounter",
+        "description": "One encounter with its anchors, events, evidence refs and subject trajectory.\n\nThe grouping options must match the ones the encounter was listed with;\n``encounter_id`` is resolved inside the same grouping.",
+        "operationId": "demo_encounter_api_v1_demos__demo_id__encounters__encounter_id__get",
+        "parameters": [
+          {
+            "name": "demo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Demo Id"
+            }
+          },
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Encounter Id"
+            }
+          },
+          {
+            "name": "generation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Generation Id"
+            }
+          },
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subject Id"
+            }
+          },
+          {
+            "name": "gap_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Gap Seconds"
+            }
+          },
+          {
+            "name": "pre_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Pre Seconds"
+            }
+          },
+          {
+            "name": "post_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 1.0,
+              "title": "Post Seconds"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demos/{demo_id}/context": {
+      "get": {
+        "summary": "Demo Context",
+        "description": "Context of the subject at exactly ``tick`` of the pinned generation.\n\nThe requested tick is used verbatim; a tick with no recorded state is\nreported through the snapshot's own coverage fields, never snapped to a\nneighbouring tick. ``cross_pairs`` and ``navigation`` are opt-in because\nboth add static-graph work to an otherwise recorded-state read.",
+        "operationId": "demo_context_api_v1_demos__demo_id__context_get",
+        "parameters": [
+          {
+            "name": "demo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Demo Id"
+            }
+          },
+          {
+            "name": "tick",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "title": "Tick"
+            }
+          },
+          {
+            "name": "generation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Generation Id"
+            }
+          },
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subject Id"
+            }
+          },
+          {
+            "name": "cross_pairs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Also resolve living teammate-to-opponent potential sightlines at this tick",
+              "default": false,
+              "title": "Cross Pairs"
+            },
+            "description": "Also resolve living teammate-to-opponent potential sightlines at this tick"
+          },
+          {
+            "name": "navigation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Also resolve navigation-graph estimates for the subject's relations",
+              "default": false,
+              "title": "Navigation"
+            },
+            "description": "Also resolve navigation-graph estimates for the subject's relations"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextSnapshot"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demos/{demo_id}/encounters/{encounter_id}/context": {
+      "get": {
+        "summary": "Demo Encounter Context",
+        "description": "Context snaps at the encounter's anchors plus the pre-contact offsets.",
+        "operationId": "demo_encounter_context_api_v1_demos__demo_id__encounters__encounter_id__context_get",
+        "parameters": [
+          {
+            "name": "demo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Demo Id"
+            }
+          },
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Encounter Id"
+            }
+          },
+          {
+            "name": "generation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Generation Id"
+            }
+          },
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Subject Id"
+            }
+          },
+          {
+            "name": "gap_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Gap Seconds"
+            }
+          },
+          {
+            "name": "pre_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 3.0,
+              "title": "Pre Seconds"
+            }
+          },
+          {
+            "name": "post_seconds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 60.0,
+              "minimum": 0.0,
+              "default": 1.0,
+              "title": "Post Seconds"
+            }
+          },
+          {
+            "name": "navigation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Also resolve navigation-graph estimates for the subject's relations",
+              "default": false,
+              "title": "Navigation"
+            },
+            "description": "Also resolve navigation-graph estimates for the subject's relations"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterContext"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/geometry/capabilities": {
+      "get": {
+        "summary": "Geometry Capabilities",
+        "description": "Which installed geometry components exist for a map, and for which client version.",
+        "operationId": "geometry_capabilities_api_v1_geometry_capabilities_get",
+        "parameters": [
+          {
+            "name": "map_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "title": "Map Name"
+            }
+          },
+          {
+            "name": "demo_client_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Demo Client Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeometryCapabilities"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/geometry/segment": {
+      "get": {
+        "summary": "Geometry Segment",
+        "description": "Static sightline between two world points of the installed map assets.\n\n``unknown``/``unsupported``/``mismatch`` are capability answers, not\nerrors: they mean the historical sightline is not proven.",
+        "operationId": "geometry_segment_api_v1_geometry_segment_get",
+        "parameters": [
+          {
+            "name": "map_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "title": "Map Name"
+            }
+          },
+          {
+            "name": "start_x",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start X"
+            }
+          },
+          {
+            "name": "start_y",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start Y"
+            }
+          },
+          {
+            "name": "start_z",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start Z"
+            }
+          },
+          {
+            "name": "end_x",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End X"
+            }
+          },
+          {
+            "name": "end_y",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End Y"
+            }
+          },
+          {
+            "name": "end_z",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End Z"
+            }
+          },
+          {
+            "name": "demo_client_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Demo Client Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/geometry/navigation": {
+      "get": {
+        "summary": "Geometry Navigation",
+        "description": "Navigation path between two world points, with its own availability status.",
+        "operationId": "geometry_navigation_api_v1_geometry_navigation_get",
+        "parameters": [
+          {
+            "name": "map_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "title": "Map Name"
+            }
+          },
+          {
+            "name": "start_x",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start X"
+            }
+          },
+          {
+            "name": "start_y",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start Y"
+            }
+          },
+          {
+            "name": "start_z",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Start Z"
+            }
+          },
+          {
+            "name": "end_x",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End X"
+            }
+          },
+          {
+            "name": "end_y",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End Y"
+            }
+          },
+          {
+            "name": "end_z",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "End Z"
+            }
+          },
+          {
+            "name": "demo_client_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Demo Client Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NavigationResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/geometry/location": {
+      "get": {
+        "summary": "Geometry Location",
+        "description": "Static facts about one world point: bounds, solidity, floor, nav area.\n\nThe point is used verbatim. It is a *ground* question (floor height, nav\narea), so callers should pass a recorded player origin rather than an eye\nposition; coordinates outside the map report ``in_bounds=false`` instead\nof being corrected.",
+        "operationId": "geometry_location_api_v1_geometry_location_get",
+        "parameters": [
+          {
+            "name": "map_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "title": "Map Name"
+            }
+          },
+          {
+            "name": "x",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "X"
+            }
+          },
+          {
+            "name": "y",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Y"
+            }
+          },
+          {
+            "name": "z",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "maximum": 32768.0,
+              "minimum": -32768.0,
+              "title": "Z"
+            }
+          },
+          {
+            "name": "demo_client_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Demo Client Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointLocation"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/geometry/{map_name}/prepare": {
+      "post": {
+        "summary": "Geometry Prepare",
+        "description": "Explicitly preprocess one map's physics/navigation components.\n\nDeliberately a separate write: scrubbing or listing never triggers\nresource extraction, and an unprepared map answers with typed component\nstatuses instead of failing.",
+        "operationId": "geometry_prepare_api_v1_geometry__map_name__prepare_post",
+        "parameters": [
+          {
+            "name": "map_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "title": "Map Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeometryCapabilities"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "507": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Insufficient Storage"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/assets/{asset_id}": {
       "get": {
         "summary": "Asset",
@@ -1772,7 +3227,9 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "status"
+          "status",
+          "job_id",
+          "demo_id"
         ],
         "title": "Accepted"
       },
@@ -2004,6 +3461,72 @@
         ],
         "title": "AnalyticState"
       },
+      "AngularSpread": {
+        "properties": {
+          "opponent_count": {
+            "type": "integer",
+            "title": "Opponent Count",
+            "default": 0
+          },
+          "span_degrees": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Span Degrees"
+          },
+          "max_pair_separation_degrees": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Pair Separation Degrees"
+          },
+          "subject_yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Yaw"
+          },
+          "subject_yaw_recorded": {
+            "type": "boolean",
+            "title": "Subject Yaw Recorded",
+            "default": false
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "opponent_count",
+          "span_degrees",
+          "max_pair_separation_degrees",
+          "subject_yaw",
+          "subject_yaw_recorded",
+          "limitations"
+        ],
+        "title": "AngularSpread",
+        "description": "Angular geometry of the directions the subject faces at one tick.\n\nPure geometry over recorded yaw and positions: no risk, threat or awareness\ninterpretation is derived from it."
+      },
       "Capability": {
         "properties": {
           "status": {
@@ -2030,9 +3553,1062 @@
         "type": "object",
         "required": [
           "status",
-          "source"
+          "source",
+          "note"
         ],
         "title": "Capability"
+      },
+      "ContextAnchorSnapshot": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "computed",
+              "geometry_dependent",
+              "estimated",
+              "unsupported"
+            ],
+            "title": "Kind",
+            "default": "computed"
+          },
+          "anchor_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anchor Kind"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "requested_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requested Tick"
+          },
+          "offset_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset Seconds"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/ContextSnapshot"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "anchor_kind",
+          "reason",
+          "requested_tick",
+          "offset_seconds",
+          "snapshot"
+        ],
+        "title": "ContextAnchorSnapshot",
+        "description": "A snapshot taken at one encounter anchor or pre/post-contact offset."
+      },
+      "ContextCapabilities": {
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "geometry": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "sightlines": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "navigation": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "utility": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "exposure": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "view_origin": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "lifecycle": {
+            "$ref": "#/components/schemas/EvidenceCapability"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state",
+          "geometry",
+          "sightlines",
+          "navigation",
+          "utility",
+          "exposure",
+          "view_origin",
+          "lifecycle",
+          "limitations"
+        ],
+        "title": "ContextCapabilities",
+        "description": "Per-snapshot capability report; every field names its source."
+      },
+      "ContextCounts": {
+        "properties": {
+          "state_rows": {
+            "type": "integer",
+            "title": "State Rows",
+            "default": 0
+          },
+          "identity_identified": {
+            "type": "integer",
+            "title": "Identity Identified",
+            "default": 0
+          },
+          "identity_null": {
+            "type": "integer",
+            "title": "Identity Null",
+            "default": 0
+          },
+          "identity_null_alive": {
+            "type": "integer",
+            "title": "Identity Null Alive",
+            "default": 0
+          },
+          "living": {
+            "type": "integer",
+            "title": "Living",
+            "default": 0
+          },
+          "dead": {
+            "type": "integer",
+            "title": "Dead",
+            "default": 0
+          },
+          "unknown_health": {
+            "type": "integer",
+            "title": "Unknown Health",
+            "default": 0
+          },
+          "active_relations": {
+            "type": "integer",
+            "title": "Active Relations",
+            "default": 0
+          },
+          "inactive_relations": {
+            "type": "integer",
+            "title": "Inactive Relations",
+            "default": 0
+          },
+          "same_side": {
+            "type": "integer",
+            "title": "Same Side",
+            "default": 0
+          },
+          "opposite_side": {
+            "type": "integer",
+            "title": "Opposite Side",
+            "default": 0
+          },
+          "unknown_side": {
+            "type": "integer",
+            "title": "Unknown Side",
+            "default": 0
+          },
+          "opponent_static_clear": {
+            "type": "integer",
+            "title": "Opponent Static Clear",
+            "default": 0
+          },
+          "opponent_static_blocked": {
+            "type": "integer",
+            "title": "Opponent Static Blocked",
+            "default": 0
+          },
+          "opponent_static_unknown": {
+            "type": "integer",
+            "title": "Opponent Static Unknown",
+            "default": 0
+          },
+          "sightlines_evaluated": {
+            "type": "integer",
+            "title": "Sightlines Evaluated",
+            "default": 0
+          },
+          "sightlines_unavailable": {
+            "type": "integer",
+            "title": "Sightlines Unavailable",
+            "default": 0
+          },
+          "cross_pairs_evaluated": {
+            "type": "integer",
+            "title": "Cross Pairs Evaluated",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state_rows",
+          "identity_identified",
+          "identity_null",
+          "identity_null_alive",
+          "living",
+          "dead",
+          "unknown_health",
+          "active_relations",
+          "inactive_relations",
+          "same_side",
+          "opposite_side",
+          "unknown_side",
+          "opponent_static_clear",
+          "opponent_static_blocked",
+          "opponent_static_unknown",
+          "sightlines_evaluated",
+          "sightlines_unavailable",
+          "cross_pairs_evaluated"
+        ],
+        "title": "ContextCounts",
+        "description": "Observations at the exact tick, with unknowns kept separate.\n\n``opponent_static_*`` count *active opponent* sightlines only; a dead or\nunclassified player is never counted as a clear or blocked opponent. Every\n``static_clear``/``static_blocked`` here is scoped to the installed map build\n(:data:`STATIC_SCOPE`): it is a static-geometry reading, not confirmed\nvisibility or exposure for the recording."
+      },
+      "ContextPositionChange": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "from_tick": {
+            "type": "integer",
+            "title": "From Tick"
+          },
+          "to_tick": {
+            "type": "integer",
+            "title": "To Tick"
+          },
+          "stride_ticks": {
+            "type": "integer",
+            "title": "Stride Ticks"
+          },
+          "samples": {
+            "type": "integer",
+            "title": "Samples",
+            "default": 0
+          },
+          "living_samples": {
+            "type": "integer",
+            "title": "Living Samples",
+            "default": 0
+          },
+          "dead_samples": {
+            "type": "integer",
+            "title": "Dead Samples",
+            "default": 0
+          },
+          "missing_samples": {
+            "type": "integer",
+            "title": "Missing Samples",
+            "default": 0
+          },
+          "contiguous_living": {
+            "type": "boolean",
+            "title": "Contiguous Living",
+            "default": false
+          },
+          "dx": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dx"
+          },
+          "dy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dy"
+          },
+          "dz": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dz"
+          },
+          "displacement_2d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displacement 2D"
+          },
+          "displacement_3d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displacement 3D"
+          },
+          "path_length_2d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path Length 2D"
+          },
+          "bounded": {
+            "type": "boolean",
+            "title": "Bounded",
+            "default": true
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "from_tick",
+          "to_tick",
+          "stride_ticks",
+          "samples",
+          "living_samples",
+          "dead_samples",
+          "missing_samples",
+          "contiguous_living",
+          "dx",
+          "dy",
+          "dz",
+          "displacement_2d",
+          "displacement_3d",
+          "path_length_2d",
+          "bounded",
+          "limitations"
+        ],
+        "title": "ContextPositionChange",
+        "description": "Observed movement of one player over a bounded exact-tick window.\n\n``dx``/``dy``/``dz``/``displacement_*``/``path_length_2d`` are reported only when\nthe living, position-carrying samples form one *contiguous* run on the sampling\ngrid inside a single round (``contiguous_living``). A death, a respawn, a missing\nsample or a round boundary breaks the run and the derived metrics stay ``None``\ninstead of bridging across it; ``missing_samples``/``dead_samples`` keep the\ncounts and ``limitations`` names the break."
+      },
+      "ContextRelation": {
+        "properties": {
+          "subject_id": {
+            "type": "string",
+            "title": "Subject Id"
+          },
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "teammate",
+              "opponent",
+              "unknown"
+            ],
+            "title": "Relation"
+          },
+          "subject_side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Side"
+          },
+          "other_side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Other Side"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": false
+          },
+          "inactive_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inactive Reason"
+          },
+          "distance_2d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance 2D"
+          },
+          "distance_3d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance 3D"
+          },
+          "bearing_degrees": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bearing Degrees"
+          },
+          "relative_yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relative Yaw"
+          },
+          "view_origin": {
+            "$ref": "#/components/schemas/ViewOrigin"
+          },
+          "other_view_origin": {
+            "$ref": "#/components/schemas/ViewOrigin"
+          },
+          "static_sightline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SegmentResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "static_effective_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "static_clear",
+                  "static_blocked",
+                  "unknown",
+                  "unsupported"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Static Effective Status"
+          },
+          "navigation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NavigationResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "other_state": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextStateRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "subject_id",
+          "player_id",
+          "relation",
+          "subject_side",
+          "other_side",
+          "active",
+          "inactive_reason",
+          "distance_2d",
+          "distance_3d",
+          "bearing_degrees",
+          "relative_yaw",
+          "view_origin",
+          "other_view_origin",
+          "static_sightline",
+          "static_effective_status",
+          "navigation",
+          "other_state",
+          "evidence",
+          "limitations"
+        ],
+        "title": "ContextRelation",
+        "description": "The subject's relationship to one other player at one exact tick."
+      },
+      "ContextSnapshot": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "subject_id": {
+            "type": "string",
+            "title": "Subject Id"
+          },
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "round_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Round Id"
+          },
+          "tick_rate_hz": {
+            "type": "number",
+            "title": "Tick Rate Hz"
+          },
+          "actual_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Tick"
+          },
+          "exact": {
+            "type": "boolean",
+            "title": "Exact",
+            "default": false
+          },
+          "gap_ticks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Ticks"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextStateRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subject_alive": {
+            "type": "boolean",
+            "title": "Subject Alive",
+            "default": false
+          },
+          "relations": {
+            "items": {
+              "$ref": "#/components/schemas/ContextRelation"
+            },
+            "type": "array",
+            "title": "Relations"
+          },
+          "inactive_relations": {
+            "items": {
+              "$ref": "#/components/schemas/ContextRelation"
+            },
+            "type": "array",
+            "title": "Inactive Relations"
+          },
+          "participants": {
+            "items": {
+              "$ref": "#/components/schemas/ContextStateRef"
+            },
+            "type": "array",
+            "title": "Participants"
+          },
+          "pair_relations": {
+            "items": {
+              "$ref": "#/components/schemas/CrossSightline"
+            },
+            "type": "array",
+            "title": "Pair Relations"
+          },
+          "opponent_directions": {
+            "items": {
+              "$ref": "#/components/schemas/OpponentDirection"
+            },
+            "type": "array",
+            "title": "Opponent Directions"
+          },
+          "angular_spread": {
+            "$ref": "#/components/schemas/AngularSpread"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/ContextCounts"
+          },
+          "position_change": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContextPositionChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "utility": {
+            "items": {
+              "$ref": "#/components/schemas/ContextUtilityFact"
+            },
+            "type": "array",
+            "title": "Utility"
+          },
+          "lifecycle_before": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LifecycleFact"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lifecycle_after": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LifecycleFact"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lifecycle_unattributed_rows": {
+            "type": "integer",
+            "title": "Lifecycle Unattributed Rows",
+            "default": 0
+          },
+          "static_scope": {
+            "type": "string",
+            "title": "Static Scope",
+            "default": "installed_map_build"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/ContextCapabilities"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ReconstructionProvenance"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "subject_id",
+          "tick",
+          "round_id",
+          "tick_rate_hz",
+          "actual_tick",
+          "exact",
+          "gap_ticks",
+          "subject",
+          "subject_alive",
+          "relations",
+          "inactive_relations",
+          "participants",
+          "pair_relations",
+          "opponent_directions",
+          "angular_spread",
+          "counts",
+          "position_change",
+          "utility",
+          "lifecycle_before",
+          "lifecycle_after",
+          "lifecycle_unattributed_rows",
+          "static_scope",
+          "capabilities",
+          "provenance",
+          "limitations"
+        ],
+        "title": "ContextSnapshot",
+        "description": "Exact-tick state of the subject, its relations and recorded utility."
+      },
+      "ContextStateRef": {
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "title": "Dataset",
+            "default": "player_state"
+          },
+          "row_ordinal": {
+            "type": "integer",
+            "title": "Row Ordinal"
+          },
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "health": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Health"
+          },
+          "alive": {
+            "type": "boolean",
+            "title": "Alive",
+            "default": false
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Side"
+          },
+          "is_crouched": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Crouched"
+          },
+          "is_scoped": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Scoped"
+          },
+          "active_weapon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Weapon"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "dataset",
+          "row_ordinal",
+          "tick",
+          "player_id",
+          "health",
+          "alive",
+          "side",
+          "is_crouched",
+          "is_scoped",
+          "active_weapon",
+          "evidence"
+        ],
+        "title": "ContextStateRef",
+        "description": "One verbatim ``player_state`` observation, addressed by row ordinal."
+      },
+      "ContextUtilityFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "start_tick": {
+            "type": "integer",
+            "title": "Start Tick"
+          },
+          "end_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Tick"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
+          "site": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          },
+          "semantics_reliable": {
+            "type": "boolean",
+            "title": "Semantics Reliable",
+            "default": false
+          },
+          "evidence_kind": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "computed",
+              "geometry_dependent",
+              "estimated",
+              "unsupported"
+            ],
+            "title": "Evidence Kind",
+            "default": "recorded"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "owner_id",
+          "start_tick",
+          "end_tick",
+          "x",
+          "y",
+          "z",
+          "site",
+          "details",
+          "semantics_reliable",
+          "evidence_kind",
+          "evidence",
+          "limitations"
+        ],
+        "title": "ContextUtilityFact",
+        "description": "One recorded utility fact (slice B table row), never inferred.\n\n``semantics_reliable`` is ``False`` when the source cannot promise what the\nrow means (throw versus detonation versus expiry, unknown endpoint), in which\ncase the interval end is left unresolved. ``evidence`` points at the exact\nsource row (``dataset`` = the utility table, its ``row_ordinal``, ``tick`` =\n``start_tick``, and the round containing that tick), and ``evidence_kind``\nstates whether the row is recorded engine state or an upstream reconstruction."
       },
       "CoverageResponse": {
         "properties": {
@@ -2057,10 +4633,141 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "scope",
           "coverage"
         ],
         "title": "CoverageResponse"
+      },
+      "CrossSightline": {
+        "properties": {
+          "teammate_id": {
+            "type": "string",
+            "title": "Teammate Id"
+          },
+          "opponent_id": {
+            "type": "string",
+            "title": "Opponent Id"
+          },
+          "teammate_origin": {
+            "$ref": "#/components/schemas/ViewOrigin"
+          },
+          "opponent_origin": {
+            "$ref": "#/components/schemas/ViewOrigin"
+          },
+          "distance_2d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance 2D"
+          },
+          "distance_3d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance 3D"
+          },
+          "bearing_degrees": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bearing Degrees"
+          },
+          "relative_yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relative Yaw"
+          },
+          "static_sightline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SegmentResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "static_effective_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "static_clear",
+                  "static_blocked",
+                  "unknown",
+                  "unsupported"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Static Effective Status"
+          },
+          "navigation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NavigationResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": "installed_map_build"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "teammate_id",
+          "opponent_id",
+          "teammate_origin",
+          "opponent_origin",
+          "distance_2d",
+          "distance_3d",
+          "bearing_degrees",
+          "relative_yaw",
+          "static_sightline",
+          "static_effective_status",
+          "navigation",
+          "scope",
+          "limitations"
+        ],
+        "title": "CrossSightline",
+        "description": "One potential living teammate\u2192opponent sightline at one exact tick.\n\nBoth endpoints are living recorded players, and the segment runs between\nstance-based (or recorded) eye positions. The result is static geometry scoped\nto the installed map build: it is never a statement about who could see,\ntrade, or react to whom."
       },
       "DemoDetail": {
         "properties": {
@@ -2170,7 +4877,12 @@
           "demo_id",
           "raw_path",
           "size",
-          "created_at"
+          "created_at",
+          "generation_id",
+          "manifest_path",
+          "map_name",
+          "quality",
+          "warnings"
         ],
         "title": "DemoRecord"
       },
@@ -2229,11 +4941,1004 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "tick",
           "player_a",
-          "player_b"
+          "player_b",
+          "distance_2d",
+          "distance_3d",
+          "missing"
         ],
         "title": "DistanceResponse"
+      },
+      "EncounterAnchor": {
+        "properties": {
+          "anchor_id": {
+            "type": "string",
+            "title": "Anchor Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "first_interaction",
+              "first_shot",
+              "first_damage",
+              "last_interaction",
+              "kill",
+              "death",
+              "assist",
+              "pre_contact",
+              "post_contact",
+              "resolution"
+            ],
+            "title": "Kind"
+          },
+          "tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tick"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "observed",
+              "unavailable"
+            ],
+            "title": "Status",
+            "default": "observed"
+          },
+          "evidence_kind": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "computed",
+              "geometry_dependent",
+              "estimated",
+              "unsupported"
+            ],
+            "title": "Evidence Kind",
+            "default": "recorded"
+          },
+          "player_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Player Ids"
+          },
+          "dataset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset"
+          },
+          "row_ordinal": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Row Ordinal"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "resolution": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "subject_death",
+                  "event_gap",
+                  "round_end"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolution"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceRef"
+            },
+            "type": "array",
+            "title": "Evidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "anchor_id",
+          "kind",
+          "tick",
+          "status",
+          "evidence_kind",
+          "player_ids",
+          "dataset",
+          "row_ordinal",
+          "detail",
+          "resolution",
+          "evidence"
+        ],
+        "title": "EncounterAnchor",
+        "description": "One anchor inside an encounter.\n\n``observed`` anchors whose kind is in :data:`EVIDENCE_ANCHOR_KINDS`\n(``first_interaction``, ``first_shot``, ``first_damage``,\n``last_interaction``, ``kill``, ``death``, ``assist``) carry exactly one\n:class:`EvidenceRef` and name the source row, so ``tick`` is the exact\nrecorded tick. ``pre_contact``/``post_contact`` and ``resolution`` are\nderived from the grouping configuration and the seed set; they carry\n``evidence_kind=\"computed\"`` (``resolution`` keeps the recorded death row as\nevidence for the ``subject_death`` rule, in which case its\n``evidence_kind`` stays ``\"recorded\"``).\n\nAn anchor that cannot be observed in this episode (for example no shot was\nrecorded) is still returned, with ``status=\"unavailable\"``, ``tick=None``,\n``evidence_kind=\"unsupported\"`` and no evidence, instead of being omitted or\ngiven a fabricated tick. ``resolution`` is only set on the ``resolution``\nanchor and states the segmentation rule that ended it."
+      },
+      "EncounterContext": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "encounter_id": {
+            "type": "string",
+            "title": "Encounter Id"
+          },
+          "round_id": {
+            "type": "integer",
+            "title": "Round Id"
+          },
+          "subject_id": {
+            "type": "string",
+            "title": "Subject Id"
+          },
+          "start_tick": {
+            "type": "integer",
+            "title": "Start Tick"
+          },
+          "end_tick": {
+            "type": "integer",
+            "title": "End Tick"
+          },
+          "interaction_start_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interaction Start Tick"
+          },
+          "interaction_end_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interaction End Tick"
+          },
+          "first_interaction_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Interaction Tick"
+          },
+          "snapshots": {
+            "items": {
+              "$ref": "#/components/schemas/ContextAnchorSnapshot"
+            },
+            "type": "array",
+            "title": "Snapshots"
+          },
+          "subject_track": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ParticipantTrack"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "participant_tracks": {
+            "items": {
+              "$ref": "#/components/schemas/ParticipantTrack"
+            },
+            "type": "array",
+            "title": "Participant Tracks"
+          },
+          "subject_facing_delta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FacingDelta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exposure": {
+            "$ref": "#/components/schemas/EncounterExposure"
+          },
+          "utility": {
+            "items": {
+              "$ref": "#/components/schemas/ContextUtilityFact"
+            },
+            "type": "array",
+            "title": "Utility"
+          },
+          "lifecycle": {
+            "items": {
+              "$ref": "#/components/schemas/LifecycleFact"
+            },
+            "type": "array",
+            "title": "Lifecycle"
+          },
+          "lifecycle_unattributed_rows": {
+            "type": "integer",
+            "title": "Lifecycle Unattributed Rows",
+            "default": 0
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/ContextCapabilities"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ReconstructionProvenance"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "encounter_id",
+          "round_id",
+          "subject_id",
+          "start_tick",
+          "end_tick",
+          "interaction_start_tick",
+          "interaction_end_tick",
+          "first_interaction_tick",
+          "snapshots",
+          "subject_track",
+          "participant_tracks",
+          "subject_facing_delta",
+          "exposure",
+          "utility",
+          "lifecycle",
+          "lifecycle_unattributed_rows",
+          "capabilities",
+          "provenance",
+          "limitations"
+        ],
+        "title": "EncounterContext",
+        "description": "Snapshots at the encounter's anchors plus the exposure/utility timeline."
+      },
+      "EncounterDetail": {
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/EncounterSummary"
+          },
+          "source_window": {
+            "$ref": "#/components/schemas/EncounterSourceWindow"
+          },
+          "grouping": {
+            "$ref": "#/components/schemas/EncounterGrouping"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EncounterEvent"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "participants": {
+            "items": {
+              "$ref": "#/components/schemas/EncounterParticipant"
+            },
+            "type": "array",
+            "title": "Participants"
+          },
+          "subject_event_count": {
+            "type": "integer",
+            "title": "Subject Event Count"
+          },
+          "contextual_event_count": {
+            "type": "integer",
+            "title": "Contextual Event Count"
+          },
+          "subject_trajectory": {
+            "items": {
+              "$ref": "#/components/schemas/AnalyticState"
+            },
+            "type": "array",
+            "title": "Subject Trajectory"
+          },
+          "trajectory_stride": {
+            "type": "integer",
+            "title": "Trajectory Stride"
+          },
+          "trajectory_missing_ranges": {
+            "items": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Trajectory Missing Ranges"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ReconstructionProvenance"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "summary",
+          "source_window",
+          "grouping",
+          "events",
+          "participants",
+          "subject_event_count",
+          "contextual_event_count",
+          "subject_trajectory",
+          "trajectory_stride",
+          "trajectory_missing_ranges",
+          "provenance",
+          "limitations"
+        ],
+        "title": "EncounterDetail",
+        "description": "Detail view: ``summary`` plus window context, participants and trajectory.\n\n``summary`` is byte-identical to the same encounter in\n:class:`EncounterList` for the same grouping options."
+      },
+      "EncounterEvent": {
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "enum": [
+              "kills",
+              "damages",
+              "shots",
+              "bomb"
+            ],
+            "title": "Dataset"
+          },
+          "row_ordinal": {
+            "type": "integer",
+            "title": "Row Ordinal"
+          },
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "round_id": {
+            "type": "integer",
+            "title": "Round Id"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "target_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Id"
+          },
+          "assister_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assister Id"
+          },
+          "weapon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weapon"
+          },
+          "headshot": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headshot"
+          },
+          "damage_health": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Damage Health"
+          },
+          "damage_armor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Damage Armor"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "subject_role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "actor",
+                  "target",
+                  "assister"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Role"
+          },
+          "subject_involved": {
+            "type": "boolean",
+            "title": "Subject Involved",
+            "default": false
+          },
+          "contextual": {
+            "type": "boolean",
+            "title": "Contextual",
+            "default": false
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/EvidenceRef"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "dataset",
+          "row_ordinal",
+          "tick",
+          "round_id",
+          "actor_id",
+          "target_id",
+          "assister_id",
+          "weapon",
+          "headshot",
+          "damage_health",
+          "damage_armor",
+          "detail",
+          "subject_role",
+          "subject_involved",
+          "contextual",
+          "evidence"
+        ],
+        "title": "EncounterEvent",
+        "description": "One verbatim event row inside an encounter window."
+      },
+      "EncounterExposure": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "qualified",
+              "unknown",
+              "unsupported",
+              "not_applicable"
+            ],
+            "title": "Status"
+          },
+          "earliest_exposure_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Earliest Exposure Tick"
+          },
+          "earliest_exposure_player_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Earliest Exposure Player Id"
+          },
+          "opponents": {
+            "items": {
+              "$ref": "#/components/schemas/OpponentExposure"
+            },
+            "type": "array",
+            "title": "Opponents"
+          },
+          "sampling": {
+            "$ref": "#/components/schemas/ExposureSampling"
+          },
+          "unknown_dynamics": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unknown Dynamics"
+          },
+          "mismatches": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Mismatches"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "earliest_exposure_tick",
+          "earliest_exposure_player_id",
+          "opponents",
+          "sampling",
+          "unknown_dynamics",
+          "mismatches",
+          "limitations"
+        ],
+        "title": "EncounterExposure",
+        "description": "Qualified earliest exposure for the encounter, or why it is unknown.\n\n``qualified`` requires both a known static sightline and both endpoints\nobserved alive at that exact tick; the scan bounds and every unknown dynamic\nare reported next to the result."
+      },
+      "EncounterGrouping": {
+        "properties": {
+          "gap_seconds": {
+            "type": "number",
+            "title": "Gap Seconds"
+          },
+          "pre_seconds": {
+            "type": "number",
+            "title": "Pre Seconds"
+          },
+          "post_seconds": {
+            "type": "number",
+            "title": "Post Seconds"
+          },
+          "tick_rate_hz": {
+            "type": "number",
+            "title": "Tick Rate Hz"
+          },
+          "gap_ticks": {
+            "type": "integer",
+            "title": "Gap Ticks"
+          },
+          "pre_ticks": {
+            "type": "integer",
+            "title": "Pre Ticks"
+          },
+          "post_ticks": {
+            "type": "integer",
+            "title": "Post Ticks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "gap_seconds",
+          "pre_seconds",
+          "post_seconds",
+          "tick_rate_hz",
+          "gap_ticks",
+          "pre_ticks",
+          "post_ticks"
+        ],
+        "title": "EncounterGrouping",
+        "description": "Resolved grouping configuration; ticks are derived from ``tick_rate_hz``."
+      },
+      "EncounterList": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "subject_id": {
+            "type": "string",
+            "title": "Subject Id"
+          },
+          "grouping": {
+            "$ref": "#/components/schemas/EncounterGrouping"
+          },
+          "round_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Round Id"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "encounters": {
+            "items": {
+              "$ref": "#/components/schemas/EncounterSummary"
+            },
+            "type": "array",
+            "title": "Encounters"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "subject_id",
+          "grouping",
+          "round_id",
+          "total",
+          "offset",
+          "limit",
+          "encounters",
+          "limitations"
+        ],
+        "title": "EncounterList",
+        "description": "One page of encounters for a generation and subject."
+      },
+      "EncounterParticipant": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "teammate",
+              "opponent",
+              "unknown"
+            ],
+            "title": "Relation"
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Side"
+          },
+          "subject_side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Side"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles"
+          },
+          "first_seen_tick": {
+            "type": "integer",
+            "title": "First Seen Tick"
+          },
+          "last_seen_tick": {
+            "type": "integer",
+            "title": "Last Seen Tick"
+          },
+          "event_count": {
+            "type": "integer",
+            "title": "Event Count"
+          },
+          "direct": {
+            "type": "boolean",
+            "title": "Direct"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "relation",
+          "side",
+          "subject_side",
+          "roles",
+          "first_seen_tick",
+          "last_seen_tick",
+          "event_count",
+          "direct"
+        ],
+        "title": "EncounterParticipant",
+        "description": "A player involved in an encounter, with the relation recorded at contact."
+      },
+      "EncounterSourceWindow": {
+        "properties": {
+          "round_id": {
+            "type": "integer",
+            "title": "Round Id"
+          },
+          "round_start_tick": {
+            "type": "integer",
+            "title": "Round Start Tick"
+          },
+          "round_end_tick": {
+            "type": "integer",
+            "title": "Round End Tick"
+          },
+          "window_start_tick": {
+            "type": "integer",
+            "title": "Window Start Tick"
+          },
+          "window_end_tick": {
+            "type": "integer",
+            "title": "Window End Tick"
+          },
+          "truncated_start": {
+            "type": "boolean",
+            "title": "Truncated Start"
+          },
+          "truncated_end": {
+            "type": "boolean",
+            "title": "Truncated End"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "round_id",
+          "round_start_tick",
+          "round_end_tick",
+          "window_start_tick",
+          "window_end_tick",
+          "truncated_start",
+          "truncated_end"
+        ],
+        "title": "EncounterSourceWindow",
+        "description": "Bounds of the read window, with explicit clipping against the round."
+      },
+      "EncounterSummary": {
+        "properties": {
+          "encounter_id": {
+            "type": "string",
+            "title": "Encounter Id"
+          },
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "round_id": {
+            "type": "integer",
+            "title": "Round Id"
+          },
+          "subject_id": {
+            "type": "string",
+            "title": "Subject Id"
+          },
+          "start_tick": {
+            "type": "integer",
+            "title": "Start Tick"
+          },
+          "end_tick": {
+            "type": "integer",
+            "title": "End Tick"
+          },
+          "first_interaction_tick": {
+            "type": "integer",
+            "title": "First Interaction Tick"
+          },
+          "last_interaction_tick": {
+            "type": "integer",
+            "title": "Last Interaction Tick"
+          },
+          "participant_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Participant Ids"
+          },
+          "anchors": {
+            "items": {
+              "$ref": "#/components/schemas/EncounterAnchor"
+            },
+            "type": "array",
+            "title": "Anchors"
+          },
+          "event_count": {
+            "type": "integer",
+            "title": "Event Count"
+          },
+          "kill_count": {
+            "type": "integer",
+            "title": "Kill Count"
+          },
+          "death_count": {
+            "type": "integer",
+            "title": "Death Count"
+          },
+          "assist_count": {
+            "type": "integer",
+            "title": "Assist Count"
+          },
+          "subject_died": {
+            "type": "boolean",
+            "title": "Subject Died"
+          },
+          "grouping": {
+            "$ref": "#/components/schemas/EncounterGrouping"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "encounter_id",
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "round_id",
+          "subject_id",
+          "start_tick",
+          "end_tick",
+          "first_interaction_tick",
+          "last_interaction_tick",
+          "participant_ids",
+          "anchors",
+          "event_count",
+          "kill_count",
+          "death_count",
+          "assist_count",
+          "subject_died",
+          "grouping",
+          "limitations"
+        ],
+        "title": "EncounterSummary",
+        "description": "List-level encounter record: derivable without reading ``player_state``."
       },
       "ErrorResponse": {
         "properties": {
@@ -2271,7 +5976,9 @@
         "required": [
           "code",
           "message",
-          "stage"
+          "stage",
+          "retryable",
+          "job_id"
         ],
         "title": "ErrorResponse"
       },
@@ -2312,6 +6019,7 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "tick_rate_hz",
           "event",
           "states",
@@ -2354,12 +6062,203 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "start_tick",
           "end_tick",
           "event_count",
           "events"
         ],
         "title": "EventsResponse"
+      },
+      "EvidenceCapability": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "partial",
+              "unavailable",
+              "unsupported"
+            ],
+            "title": "Status"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "source",
+          "limitations"
+        ],
+        "title": "EvidenceCapability"
+      },
+      "EvidenceRef": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "dataset": {
+            "type": "string",
+            "title": "Dataset"
+          },
+          "row_ordinal": {
+            "type": "integer",
+            "title": "Row Ordinal"
+          },
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "round_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Round Id"
+          },
+          "player_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Player Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "dataset",
+          "row_ordinal",
+          "tick",
+          "round_id",
+          "player_ids"
+        ],
+        "title": "EvidenceRef"
+      },
+      "ExposureSampling": {
+        "properties": {
+          "start_tick": {
+            "type": "integer",
+            "title": "Start Tick"
+          },
+          "end_tick": {
+            "type": "integer",
+            "title": "End Tick"
+          },
+          "stride_ticks": {
+            "type": "integer",
+            "title": "Stride Ticks"
+          },
+          "samples": {
+            "type": "integer",
+            "title": "Samples",
+            "default": 0
+          },
+          "ticks": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Ticks"
+          },
+          "subject_alive_samples": {
+            "type": "integer",
+            "title": "Subject Alive Samples",
+            "default": 0
+          },
+          "tick_rate_hz": {
+            "type": "number",
+            "title": "Tick Rate Hz"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "start_tick",
+          "end_tick",
+          "stride_ticks",
+          "samples",
+          "ticks",
+          "subject_alive_samples",
+          "tick_rate_hz"
+        ],
+        "title": "ExposureSampling",
+        "description": "Bounds and the actual grid of the exposure scan.\n\n``ticks`` is the exact sampled grid, which always includes ``end_tick``, so a\nresult can never claim more coverage than was read."
+      },
+      "FacingDelta": {
+        "properties": {
+          "from_tick": {
+            "type": "integer",
+            "title": "From Tick"
+          },
+          "to_tick": {
+            "type": "integer",
+            "title": "To Tick"
+          },
+          "yaw_from": {
+            "type": "number",
+            "title": "Yaw From"
+          },
+          "yaw_to": {
+            "type": "number",
+            "title": "Yaw To"
+          },
+          "delta_degrees": {
+            "type": "number",
+            "title": "Delta Degrees"
+          },
+          "stride_ticks": {
+            "type": "integer",
+            "title": "Stride Ticks"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "from_tick",
+          "to_tick",
+          "yaw_from",
+          "yaw_to",
+          "delta_degrees",
+          "stride_ticks",
+          "limitations"
+        ],
+        "title": "FacingDelta",
+        "description": "Change in the subject's recorded view yaw between two living samples."
       },
       "Fingerprint": {
         "properties": {
@@ -2394,6 +6293,292 @@
           "ctime_ns"
         ],
         "title": "Fingerprint"
+      },
+      "GeometryAsset": {
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "title": "Asset Id"
+          },
+          "map_name": {
+            "type": "string",
+            "title": "Map Name"
+          },
+          "vpk": {
+            "type": "string",
+            "title": "Vpk"
+          },
+          "client_version": {
+            "type": "string",
+            "title": "Client Version"
+          },
+          "parser_version": {
+            "type": "string",
+            "title": "Parser Version"
+          },
+          "tool": {
+            "type": "string",
+            "title": "Tool"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/GeometrySource"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asset_id",
+          "map_name",
+          "vpk",
+          "client_version",
+          "parser_version",
+          "tool",
+          "sources"
+        ],
+        "title": "GeometryAsset",
+        "description": "Asset provenance for one prepared map at one installed client version."
+      },
+      "GeometryCapabilities": {
+        "properties": {
+          "map_name": {
+            "type": "string",
+            "title": "Map Name"
+          },
+          "prepared": {
+            "type": "boolean",
+            "title": "Prepared"
+          },
+          "physics": {
+            "$ref": "#/components/schemas/GeometryComponent"
+          },
+          "navigation": {
+            "$ref": "#/components/schemas/GeometryComponent"
+          },
+          "bounds_min": {
+            "anyOf": [
+              {
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 3,
+                "minItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bounds Min"
+          },
+          "bounds_max": {
+            "anyOf": [
+              {
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 3,
+                "minItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bounds Max"
+          },
+          "triangle_count": {
+            "type": "integer",
+            "title": "Triangle Count",
+            "default": 0
+          },
+          "nav_area_count": {
+            "type": "integer",
+            "title": "Nav Area Count",
+            "default": 0
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeometryAsset"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "match_status": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "mismatch",
+              "unknown"
+            ],
+            "title": "Match Status",
+            "default": "unknown"
+          },
+          "install_client_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Install Client Version"
+          },
+          "demo_client_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Demo Client Version"
+          },
+          "preprocessing_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preprocessing Ms"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "map_name",
+          "prepared",
+          "physics",
+          "navigation",
+          "bounds_min",
+          "bounds_max",
+          "triangle_count",
+          "nav_area_count",
+          "asset",
+          "asset_id",
+          "match_status",
+          "install_client_version",
+          "demo_client_version",
+          "preprocessing_ms",
+          "limitations"
+        ],
+        "title": "GeometryCapabilities",
+        "description": "What static geometry is available for one map, without querying it."
+      },
+      "GeometryComponent": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "partial",
+              "unavailable",
+              "unsupported"
+            ],
+            "title": "Status"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "source",
+          "limitations"
+        ],
+        "title": "GeometryComponent",
+        "description": "Capability of one geometry component (collision physics or navigation)."
+      },
+      "GeometrySource": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "vmap",
+              "nav",
+              "physics",
+              "glb"
+            ],
+            "title": "Kind"
+          },
+          "entry": {
+            "type": "string",
+            "title": "Entry"
+          },
+          "byte_size": {
+            "type": "integer",
+            "title": "Byte Size"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "entry",
+          "byte_size",
+          "sha256"
+        ],
+        "title": "GeometrySource",
+        "description": "One extracted VPK entry backing a map's geometry cache."
       },
       "HTTPValidationError": {
         "properties": {
@@ -2436,6 +6621,7 @@
         "type": "object",
         "required": [
           "status",
+          "schema_version",
           "data_root",
           "worker_running",
           "free_bytes"
@@ -2495,7 +6681,9 @@
           "null_observations",
           "alive_total",
           "alive_identified",
-          "alive_null"
+          "alive_null",
+          "live_coverage",
+          "notes"
         ],
         "title": "IdentityCoverage"
       },
@@ -2583,12 +6771,134 @@
         "required": [
           "id",
           "demo_id",
+          "profile_key",
           "state",
           "generation_id",
+          "attempt",
           "created_at",
-          "updated_at"
+          "updated_at",
+          "error",
+          "worker_pid"
         ],
         "title": "JobRecord"
+      },
+      "LifecycleFact": {
+        "properties": {
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "user_slot": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Slot"
+          },
+          "team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team"
+          },
+          "previous_team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Team"
+          },
+          "is_bot": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Bot"
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Code"
+          },
+          "ever_fully_connected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ever Fully Connected"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tick",
+          "kind",
+          "player_id",
+          "user_slot",
+          "team",
+          "previous_team",
+          "is_bot",
+          "reason_code",
+          "ever_fully_connected",
+          "details",
+          "limitations"
+        ],
+        "title": "LifecycleFact",
+        "description": "One recorded connect/disconnect/spawn/team-change row (slice B ``player_lifecycle``).\n\nOnly rows whose ``player_id`` is resolved to an account are attributable to a\nplayer: the source records a SteamID64 for disconnects only, so a row with a\nnull ``player_id`` is counted and never guessed onto a subject by slot."
       },
       "Manifest": {
         "properties": {
@@ -2612,7 +6922,10 @@
           },
           "profile": {
             "type": "string",
-            "const": "foundation-v1",
+            "enum": [
+              "foundation-v1",
+              "reconstruction-v1"
+            ],
             "title": "Profile",
             "default": "foundation-v1"
           },
@@ -2730,13 +7043,28 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
+          "schema_version",
           "demo_id",
           "job_id",
           "generation_id",
+          "profile",
+          "profile_key",
+          "parser_version",
+          "normalizer_version",
+          "created_at",
           "source_size",
           "map_name",
           "tick_rate_hz",
-          "tables"
+          "tick_origin",
+          "clock",
+          "tick_rate_source",
+          "recording_kind",
+          "quality",
+          "demo_client_version",
+          "demo_version_source",
+          "tables",
+          "capabilities",
+          "warnings"
         ],
         "title": "Manifest"
       },
@@ -2790,6 +7118,7 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
+          "schema_version",
           "results"
         ],
         "title": "MultiQueryResponse"
@@ -2837,7 +7166,10 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "demo_id"
+          "demo_id",
+          "generation_id",
+          "result",
+          "error"
         ],
         "title": "MultiQueryResult",
         "description": "Outcome of one selection: ``result`` on success, ``error`` when that demo failed."
@@ -2867,6 +7199,796 @@
         ],
         "title": "MultiQuerySelection",
         "description": "One ``demo_id``/``generation_id`` pair resolved independently by the fan-out."
+      },
+      "NavigationResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable",
+              "unsupported"
+            ],
+            "title": "Status"
+          },
+          "start": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Start"
+          },
+          "end": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "End"
+          },
+          "direct_distance": {
+            "type": "number",
+            "title": "Direct Distance"
+          },
+          "path_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path Distance"
+          },
+          "connected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connected"
+          },
+          "path": {
+            "items": {
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array",
+              "maxItems": 3,
+              "minItems": 3
+            },
+            "type": "array",
+            "title": "Path"
+          },
+          "area_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Area Ids"
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "match_status": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "mismatch",
+              "unknown"
+            ],
+            "title": "Match Status",
+            "default": "unknown"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "start",
+          "end",
+          "direct_distance",
+          "path_distance",
+          "connected",
+          "path",
+          "area_ids",
+          "asset_id",
+          "match_status",
+          "limitations"
+        ],
+        "title": "NavigationResult",
+        "description": "Static navigation answer for one segment.\n\n``available`` carries a path; ``unavailable`` means the map has nav data but\nthe endpoints do not connect; ``unsupported`` means no usable nav source."
+      },
+      "OpponentDirection": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "bearing_degrees": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bearing Degrees"
+          },
+          "relative_yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relative Yaw"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "bearing_degrees",
+          "relative_yaw"
+        ],
+        "title": "OpponentDirection",
+        "description": "Direction from the subject to one living opponent at the exact tick."
+      },
+      "OpponentExposure": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "teammate",
+              "opponent",
+              "unknown"
+            ],
+            "title": "Relation",
+            "default": "opponent"
+          },
+          "first_alive_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Alive Tick"
+          },
+          "earliest_clear_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Earliest Clear Tick"
+          },
+          "checked_ticks": {
+            "type": "integer",
+            "title": "Checked Ticks",
+            "default": 0
+          },
+          "clear_ticks": {
+            "type": "integer",
+            "title": "Clear Ticks",
+            "default": 0
+          },
+          "blocked_ticks": {
+            "type": "integer",
+            "title": "Blocked Ticks",
+            "default": 0
+          },
+          "unknown_ticks": {
+            "type": "integer",
+            "title": "Unknown Ticks",
+            "default": 0
+          },
+          "mismatched_ticks": {
+            "type": "integer",
+            "title": "Mismatched Ticks",
+            "default": 0
+          },
+          "missing_ticks": {
+            "type": "integer",
+            "title": "Missing Ticks",
+            "default": 0
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "relation",
+          "first_alive_tick",
+          "earliest_clear_tick",
+          "checked_ticks",
+          "clear_ticks",
+          "blocked_ticks",
+          "unknown_ticks",
+          "mismatched_ticks",
+          "missing_ticks",
+          "limitations"
+        ],
+        "title": "OpponentExposure",
+        "description": "Per-opponent sightline scan inside the encounter window."
+      },
+      "ParticipantTrack": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "teammate",
+              "opponent",
+              "unknown"
+            ],
+            "title": "Relation",
+            "default": "unknown"
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Side"
+          },
+          "is_subject": {
+            "type": "boolean",
+            "title": "Is Subject",
+            "default": false
+          },
+          "stride_ticks": {
+            "type": "integer",
+            "title": "Stride Ticks",
+            "default": 1
+          },
+          "from_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Tick"
+          },
+          "to_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Tick"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/TrajectorySample"
+            },
+            "type": "array",
+            "title": "Samples"
+          },
+          "missing_samples": {
+            "type": "integer",
+            "title": "Missing Samples",
+            "default": 0
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "relation",
+          "side",
+          "is_subject",
+          "stride_ticks",
+          "from_tick",
+          "to_tick",
+          "samples",
+          "missing_samples",
+          "limitations"
+        ],
+        "title": "ParticipantTrack",
+        "description": "A bounded, evenly strided sample track for one participant.\n\nSamples are verbatim ``player_state`` rows; missing grid ticks are reported as\n``missing_samples`` and never filled."
+      },
+      "Participation": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generation Id"
+          },
+          "steam_id": {
+            "type": "string",
+            "title": "Steam Id"
+          },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "player_id_source": {
+            "type": "string",
+            "enum": [
+              "config",
+              "override"
+            ],
+            "title": "Player Id Source"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "present",
+              "absent",
+              "unresolved",
+              "not_ready"
+            ],
+            "title": "Status"
+          },
+          "in_roster": {
+            "type": "boolean",
+            "title": "In Roster"
+          },
+          "map_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Map Name"
+          },
+          "demo_client_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Demo Client Version"
+          },
+          "recording_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recording Kind"
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          },
+          "measurements": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ParticipationMeasurements"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "steam_id",
+          "player_id",
+          "player_id_source",
+          "status",
+          "in_roster",
+          "map_name",
+          "demo_client_version",
+          "recording_kind",
+          "quality",
+          "limitations",
+          "measurements"
+        ],
+        "title": "Participation",
+        "description": "What one recording says about the subject (or the explicit override)."
+      },
+      "ParticipationMeasurements": {
+        "properties": {
+          "tick_rate_hz": {
+            "type": "number",
+            "title": "Tick Rate Hz"
+          },
+          "rounds_total": {
+            "type": "integer",
+            "title": "Rounds Total"
+          },
+          "rounds_with_subject": {
+            "type": "integer",
+            "title": "Rounds With Subject"
+          },
+          "rounds_alive": {
+            "type": "integer",
+            "title": "Rounds Alive"
+          },
+          "first_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Tick"
+          },
+          "last_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Tick"
+          },
+          "rows_outside_rounds": {
+            "type": "integer",
+            "title": "Rows Outside Rounds"
+          },
+          "state_rows": {
+            "type": "integer",
+            "title": "State Rows"
+          },
+          "alive_rows": {
+            "type": "integer",
+            "title": "Alive Rows"
+          },
+          "dead_rows": {
+            "type": "integer",
+            "title": "Dead Rows"
+          },
+          "health_unknown_rows": {
+            "type": "integer",
+            "title": "Health Unknown Rows"
+          },
+          "null_identity_rows": {
+            "type": "integer",
+            "title": "Null Identity Rows"
+          },
+          "position_rows": {
+            "type": "integer",
+            "title": "Position Rows"
+          },
+          "position_missing": {
+            "type": "integer",
+            "title": "Position Missing"
+          },
+          "angle_anomalies": {
+            "type": "integer",
+            "title": "Angle Anomalies"
+          },
+          "health_anomalies": {
+            "type": "integer",
+            "title": "Health Anomalies"
+          },
+          "kills": {
+            "type": "integer",
+            "title": "Kills"
+          },
+          "deaths": {
+            "type": "integer",
+            "title": "Deaths"
+          },
+          "assists": {
+            "type": "integer",
+            "title": "Assists"
+          },
+          "damages_dealt": {
+            "type": "integer",
+            "title": "Damages Dealt"
+          },
+          "damage_taken": {
+            "type": "integer",
+            "title": "Damage Taken"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots"
+          },
+          "bomb_events": {
+            "type": "integer",
+            "title": "Bomb Events"
+          },
+          "events_outside_rounds": {
+            "type": "integer",
+            "title": "Events Outside Rounds"
+          },
+          "replay_available": {
+            "type": "boolean",
+            "title": "Replay Available"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tick_rate_hz",
+          "rounds_total",
+          "rounds_with_subject",
+          "rounds_alive",
+          "first_tick",
+          "last_tick",
+          "rows_outside_rounds",
+          "state_rows",
+          "alive_rows",
+          "dead_rows",
+          "health_unknown_rows",
+          "null_identity_rows",
+          "position_rows",
+          "position_missing",
+          "angle_anomalies",
+          "health_anomalies",
+          "kills",
+          "deaths",
+          "assists",
+          "damages_dealt",
+          "damage_taken",
+          "shots",
+          "bomb_events",
+          "events_outside_rounds",
+          "replay_available"
+        ],
+        "title": "ParticipationMeasurements",
+        "description": "Recorded measurements for one subject in one generation.\n\nEvery count is derived from the generation's own tables with bounded\naggregations; ``None`` means \"not computable from this recording\" and is\nnever substituted by ``0``. ``health_unknown_rows`` counts rows whose health\nis null \u2014 they are neither alive nor dead."
+      },
+      "PointLocation": {
+        "properties": {
+          "point": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Point"
+          },
+          "in_bounds": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "In Bounds"
+          },
+          "inside_solid": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inside Solid"
+          },
+          "floor_z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Floor Z"
+          },
+          "floor_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Floor Distance"
+          },
+          "clearance_up": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clearance Up"
+          },
+          "nav_area_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nav Area Id"
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "match_status": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "mismatch",
+              "unknown"
+            ],
+            "title": "Match Status",
+            "default": "unknown"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "point",
+          "in_bounds",
+          "inside_solid",
+          "floor_z",
+          "floor_distance",
+          "clearance_up",
+          "nav_area_id",
+          "asset_id",
+          "match_status",
+          "limitations"
+        ],
+        "title": "PointLocation",
+        "description": "Static location facts for one world-space point.\n\n``in_bounds``/``inside_solid`` are ``None`` when no collision data is\navailable: absence of geometry is unknown, never \"outside\" or \"clear\"."
       },
       "RadarDescriptor": {
         "properties": {
@@ -3005,9 +8127,111 @@
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "map_name"
+          "asset_id",
+          "map_name",
+          "installed_client_version",
+          "demo_client_version",
+          "match_status",
+          "width",
+          "height",
+          "pos_x",
+          "pos_y",
+          "scale",
+          "rotate",
+          "zoom",
+          "levels",
+          "warning"
         ],
         "title": "RadarDescriptor"
+      },
+      "ReconstructionProvenance": {
+        "properties": {
+          "demo_id": {
+            "type": "string",
+            "title": "Demo Id"
+          },
+          "generation_id": {
+            "type": "string",
+            "title": "Generation Id"
+          },
+          "profile_key": {
+            "type": "string",
+            "title": "Profile Key"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "method_version": {
+            "type": "string",
+            "title": "Method Version"
+          },
+          "map_name": {
+            "type": "string",
+            "title": "Map Name"
+          },
+          "demo_client_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Demo Client Version"
+          },
+          "map_asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Map Asset Id"
+          },
+          "map_match_status": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "mismatch",
+              "unknown"
+            ],
+            "title": "Map Match Status",
+            "default": "unknown"
+          },
+          "information_scope": {
+            "type": "string",
+            "const": "omniscient_replay",
+            "title": "Information Scope",
+            "default": "omniscient_replay"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "demo_id",
+          "generation_id",
+          "profile_key",
+          "method",
+          "method_version",
+          "map_name",
+          "demo_client_version",
+          "map_asset_id",
+          "map_match_status",
+          "information_scope",
+          "limitations"
+        ],
+        "title": "ReconstructionProvenance"
       },
       "ReplayChunk": {
         "properties": {
@@ -3077,6 +8301,8 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
+          "clock",
           "tick_rate_hz",
           "start_tick",
           "end_tick",
@@ -3331,7 +8557,10 @@
         "type": "object",
         "required": [
           "path",
-          "id"
+          "recursive",
+          "id",
+          "available",
+          "error"
         ],
         "title": "RootRecord"
       },
@@ -3475,9 +8704,189 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "rounds"
         ],
         "title": "RoundResponse"
+      },
+      "SegmentResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "static_clear",
+              "static_blocked",
+              "unknown",
+              "unsupported"
+            ],
+            "title": "Status"
+          },
+          "start": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Start"
+          },
+          "end": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "End"
+          },
+          "length": {
+            "type": "number",
+            "title": "Length"
+          },
+          "hit_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hit Distance"
+          },
+          "hit_point": {
+            "anyOf": [
+              {
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 3,
+                "minItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hit Point"
+          },
+          "hit_normal": {
+            "anyOf": [
+              {
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 3,
+                "minItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hit Normal"
+          },
+          "surface": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Surface"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "match_status": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "mismatch",
+              "unknown"
+            ],
+            "title": "Match Status",
+            "default": "unknown"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "start",
+          "end",
+          "length",
+          "hit_distance",
+          "hit_point",
+          "hit_normal",
+          "surface",
+          "source",
+          "asset_id",
+          "match_status",
+          "limitations"
+        ],
+        "title": "SegmentResult",
+        "description": "Static collision result for one world-space segment."
       },
       "SourceRecord": {
         "properties": {
@@ -3529,7 +8938,10 @@
         "type": "object",
         "required": [
           "path",
+          "fingerprint",
+          "demo_id",
           "status",
+          "error",
           "updated_at"
         ],
         "title": "SourceRecord"
@@ -3591,13 +9003,64 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "tick_rate_hz",
           "requested_tick",
           "actual_tick",
+          "gap_ticks",
           "exact",
           "states"
         ],
         "title": "StateResponse"
+      },
+      "SubjectConfig": {
+        "properties": {
+          "steam_id": {
+            "type": "string",
+            "title": "Steam Id"
+          },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "steam_id",
+          "player_id",
+          "updated_at"
+        ],
+        "title": "SubjectConfig",
+        "description": "The configured analysis subject.\n\n``player_id`` is the canonical id for ``steam_id``; it is ``None`` only when\nthe persisted value is not a valid SteamID64 (a corrupted setting row), which\ndownstream participation reports as ``unresolved`` rather than silently\nsubstituting another player."
+      },
+      "SubjectRequest": {
+        "properties": {
+          "steam_id": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Steam Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "steam_id"
+        ],
+        "title": "SubjectRequest",
+        "description": "Body of ``PUT /api/v1/analysis-subject``.\n\nThe value is passed to ``SubjectService.set`` verbatim; the service owns\nSteamID64 validation (17-digit positive account id) and rejects anything\nelse with ``INVALID_ARGUMENT``."
       },
       "TableDescriptor": {
         "properties": {
@@ -3625,7 +9088,8 @@
         "required": [
           "path",
           "row_count",
-          "sha256"
+          "sha256",
+          "schema_version"
         ],
         "title": "TableDescriptor"
       },
@@ -3682,7 +9146,10 @@
         "required": [
           "dataset",
           "row_ordinal",
-          "tick"
+          "tick",
+          "actor1",
+          "actor2",
+          "detail"
         ],
         "title": "TimelineEvent"
       },
@@ -3743,6 +9210,7 @@
         "type": "object",
         "required": [
           "generation_id",
+          "schema_version",
           "tick_rate_hz",
           "player_id",
           "start_tick",
@@ -3753,6 +9221,81 @@
           "states"
         ],
         "title": "TrajectoryResponse"
+      },
+      "TrajectorySample": {
+        "properties": {
+          "tick": {
+            "type": "integer",
+            "title": "Tick"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
+          "yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yaw"
+          },
+          "health": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Health"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tick",
+          "x",
+          "y",
+          "z",
+          "yaw",
+          "health"
+        ],
+        "title": "TrajectorySample",
+        "description": "One verbatim recorded position sample of a tracked player."
       },
       "ValidationError": {
         "properties": {
@@ -3793,6 +9336,119 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "ViewOrigin": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "estimated_standing",
+              "estimated_crouched",
+              "unknown"
+            ],
+            "title": "Mode"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
+          "yaw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yaw"
+          },
+          "pitch": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pitch"
+          },
+          "height_units": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Units"
+          },
+          "qualified": {
+            "type": "boolean",
+            "title": "Qualified",
+            "default": false
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "player_state"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "mode",
+          "x",
+          "y",
+          "z",
+          "yaw",
+          "pitch",
+          "height_units",
+          "qualified",
+          "source",
+          "limitations"
+        ],
+        "title": "ViewOrigin",
+        "description": "Where a player's eye is taken to be, and how that was established.\n\n``recorded`` means the generation itself carries an observed view origin, and\nthen \u2014 and only then \u2014 ``qualified`` is ``True``. Every other mode is an\nexplicitly unqualified estimate derived from the stance recorded at that tick,\nnever a measurement, so a sightline built from it always keeps its endpoint\nlimitation."
       }
     }
   }

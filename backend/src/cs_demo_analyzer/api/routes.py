@@ -39,6 +39,7 @@ from ..domain.contracts import (
     TimelineEvent,
     TrajectoryResponse,
 )
+from .phase2 import phase2_router
 from .replay import ReplayReader
 
 #: Hard bound on the demos fanned out by the multi-query endpoint.
@@ -387,6 +388,9 @@ def create_app(runtime, *, manage_lifetime: bool = True) -> FastAPI:
             [(selection.demo_id, selection.generation_id) for selection in body.selections], operation
         )
         return MultiQueryResponse(results=[MultiQueryResult(**entry) for entry in entries])
+
+    # -- Phase 2 reconstruction: subject, encounters, context and geometry ------
+    app.include_router(phase2_router(runtime, prefix=prefix, errors=errors))
 
     @app.get(prefix + "/assets/{asset_id}", responses=errors)
     def asset(asset_id: str):

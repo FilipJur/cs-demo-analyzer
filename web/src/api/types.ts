@@ -29,17 +29,69 @@ export type EventsResponse = Schemas['EventsResponse'];
 export type EventWindowResponse = Schemas['EventWindowResponse'];
 export type CoverageResponse = Schemas['CoverageResponse'];
 export type DistanceResponse = Schemas['DistanceResponse'];
-/** Provenance reference for future detectors; mirrors the backend EvidenceRef model. */
-export type EvidenceRef = {
-  demo_id: string;
-  generation_id: string;
-  profile_key: string;
-  dataset: string;
-  row_ordinal: number;
-  tick: number;
-  round_id: number | null;
-  player_ids: string[];
-};
+
+// -- Phase 2 reconstruction -------------------------------------------------
+export type SubjectConfig = Schemas['SubjectConfig'];
+export type SubjectRequest = Schemas['SubjectRequest'];
+export type Participation = Schemas['Participation'];
+export type ParticipationMeasurements = Schemas['ParticipationMeasurements'];
+export type EncounterList = Schemas['EncounterList'];
+export type EncounterSummary = Schemas['EncounterSummary'];
+export type EncounterDetail = Schemas['EncounterDetail'];
+export type EncounterAnchor = Schemas['EncounterAnchor'];
+export type EncounterEvent = Schemas['EncounterEvent'];
+export type EncounterParticipant = Schemas['EncounterParticipant'];
+export type EncounterGrouping = Schemas['EncounterGrouping'];
+export type EncounterSourceWindow = Schemas['EncounterSourceWindow'];
+export type ContextSnapshot = Schemas['ContextSnapshot'];
+export type ContextRelation = Schemas['ContextRelation'];
+export type ContextStateRef = Schemas['ContextStateRef'];
+export type ContextCapabilities = Schemas['ContextCapabilities'];
+export type ContextCounts = Schemas['ContextCounts'];
+export type ContextAnchorSnapshot = Schemas['ContextAnchorSnapshot'];
+export type ContextUtilityFact = Schemas['ContextUtilityFact'];
+export type ContextPositionChange = Schemas['ContextPositionChange'];
+export type CrossSightline = Schemas['CrossSightline'];
+export type AngularSpread = Schemas['AngularSpread'];
+export type OpponentDirection = Schemas['OpponentDirection'];
+export type LifecycleFact = Schemas['LifecycleFact'];
+export type ParticipantTrack = Schemas['ParticipantTrack'];
+export type FacingDelta = Schemas['FacingDelta'];
+export type TrajectorySample = Schemas['TrajectorySample'];
+export type EncounterContext = Schemas['EncounterContext'];
+export type EncounterExposure = Schemas['EncounterExposure'];
+export type ExposureSampling = Schemas['ExposureSampling'];
+export type OpponentExposure = Schemas['OpponentExposure'];
+export type ViewOrigin = Schemas['ViewOrigin'];
+export type EvidenceCapability = Schemas['EvidenceCapability'];
+export type ReconstructionProvenance = Schemas['ReconstructionProvenance'];
+export type GeometryCapabilities = Schemas['GeometryCapabilities'];
+export type GeometryAsset = Schemas['GeometryAsset'];
+export type GeometryComponent = Schemas['GeometryComponent'];
+export type GeometrySource = Schemas['GeometrySource'];
+export type SegmentResult = Schemas['SegmentResult'];
+export type NavigationResult = Schemas['NavigationResult'];
+export type PointLocation = Schemas['PointLocation'];
+
+// Vocabularies are read off the generated models, never restated here.
+export type ParticipationStatus = Participation['status'];
+export type MatchStatus = GeometryCapabilities['match_status'];
+export type ComponentStatus = GeometryComponent['status'];
+export type SegmentStatus = SegmentResult['status'];
+export type NavigationStatus = NavigationResult['status'];
+export type CapabilityStatus = EvidenceCapability['status'];
+export type RelationKind = ContextRelation['relation'];
+export type ViewOriginMode = ViewOrigin['mode'];
+export type ExposureStatus = EncounterExposure['status'];
+export type EvidenceKind = ContextAnchorSnapshot['kind'];
+export type EncounterAnchorKind = EncounterAnchor['kind'];
+export type AnchorStatus = EncounterAnchor['status'];
+export type ResolutionKind = NonNullable<EncounterAnchor['resolution']>;
+export type EventDataset = EncounterEvent['dataset'];
+export type SubjectRole = NonNullable<EncounterEvent['subject_role']>;
+export type Vec3 = SegmentResult['start'];
+/** Provenance reference carried by encounters, context and event rows. */
+export type EvidenceRef = Schemas['EvidenceRef'];
 
 // Every literal below must exist in the generated `paths` table, so a route
 // rename in the backend breaks this file at compile time instead of at runtime.
@@ -57,6 +109,18 @@ export const ROUTES = {
   rounds: '/api/v1/demos/{demo_id}/rounds',
   replay: '/api/v1/demos/{demo_id}/replay',
   asset: '/api/v1/assets/{asset_id}',
+  analysisSubject: '/api/v1/analysis-subject',
+  subjectParticipation: '/api/v1/subject-participation',
+  demoParticipation: '/api/v1/demos/{demo_id}/participation',
+  demoEncounters: '/api/v1/demos/{demo_id}/encounters',
+  demoEncounter: '/api/v1/demos/{demo_id}/encounters/{encounter_id}',
+  demoContext: '/api/v1/demos/{demo_id}/context',
+  demoEncounterContext: '/api/v1/demos/{demo_id}/encounters/{encounter_id}/context',
+  geometryCapabilities: '/api/v1/geometry/capabilities',
+  geometrySegment: '/api/v1/geometry/segment',
+  geometryNavigation: '/api/v1/geometry/navigation',
+  geometryLocation: '/api/v1/geometry/location',
+  geometryPrepare: '/api/v1/geometry/{map_name}/prepare',
 } as const satisfies Record<string, keyof paths>;
 
 export function route(template: keyof typeof ROUTES, values: Record<string, string> = {}): string {
@@ -73,3 +137,13 @@ export type ReplayQuery = NonNullable<operations['replay_api_v1_demos__demo_id__
 export type ReplayRequest = ReplayPath & ReplayQuery;
 export type DemosQuery = NonNullable<operations['demos_api_v1_demos_get']['parameters']['query']>;
 export type RoundsQuery = NonNullable<operations['rounds_api_v1_demos__demo_id__rounds_get']['parameters']['query']>;
+export type ParticipationPageQuery = NonNullable<operations['subject_participation_api_v1_subject_participation_get']['parameters']['query']>;
+export type ParticipationQuery = NonNullable<operations['demo_participation_api_v1_demos__demo_id__participation_get']['parameters']['query']>;
+export type EncountersQuery = NonNullable<operations['demo_encounters_api_v1_demos__demo_id__encounters_get']['parameters']['query']>;
+export type EncounterQuery = NonNullable<operations['demo_encounter_api_v1_demos__demo_id__encounters__encounter_id__get']['parameters']['query']>;
+export type ContextQuery = operations['demo_context_api_v1_demos__demo_id__context_get']['parameters']['query'];
+export type EncounterContextQuery = NonNullable<operations['demo_encounter_context_api_v1_demos__demo_id__encounters__encounter_id__context_get']['parameters']['query']>;
+export type GeometryCapabilitiesQuery = NonNullable<operations['geometry_capabilities_api_v1_geometry_capabilities_get']['parameters']['query']>;
+export type GeometrySegmentQuery = NonNullable<operations['geometry_segment_api_v1_geometry_segment_get']['parameters']['query']>;
+export type GeometryNavigationQuery = NonNullable<operations['geometry_navigation_api_v1_geometry_navigation_get']['parameters']['query']>;
+export type GeometryLocationQuery = NonNullable<operations['geometry_location_api_v1_geometry_location_get']['parameters']['query']>;
