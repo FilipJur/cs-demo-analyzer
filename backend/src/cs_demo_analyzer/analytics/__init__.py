@@ -6,10 +6,22 @@ Public surface for Phase 1: :class:`GenerationPool` opens pinned
 null-player-id dead-entity handling observed on the retained Inferno demo (see
 ``identity``), and ``temporal``/``spatial`` provide verbatim-row time
 operations and unit-documented spatial math.
+
+Phase 2 adds :class:`ContextService` (see ``context``): exact-tick subject
+context, living-relations and living teammate→opponent pair sightlines from the
+injected geometry service, bounded participant tracks and a qualified earliest
+exposure, with every static result scoped to the installed map build.
 """
 
 from . import spatial, temporal
 from .access import MAX_MATERIALIZED_ROWS, Generation, GenerationPool
+from .context import (
+    MAX_CROSS_PAIRS,
+    MAX_EXPOSURE_SAMPLES,
+    MAX_RELATIONS,
+    MAX_SNAPSHOTS,
+    ContextService,
+)
 from .identity import coverage, live_identity_violations
 from .spatial import (
     displacement,
@@ -37,7 +49,12 @@ from .temporal import (
 
 __all__ = [
     "EVENT_DATASETS",
+    "MAX_CROSS_PAIRS",
+    "MAX_EXPOSURE_SAMPLES",
     "MAX_MATERIALIZED_ROWS",
+    "MAX_RELATIONS",
+    "MAX_SNAPSHOTS",
+    "ContextService",
     "Generation",
     "GenerationPool",
     "coverage",
