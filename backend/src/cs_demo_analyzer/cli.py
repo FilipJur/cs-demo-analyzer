@@ -43,12 +43,21 @@ def main() -> int:
     reprocess = sub.add_parser("reprocess", help="Parse a retained recording into a new generation")
     reprocess.add_argument("demo_id")
     sub.add_parser("scan", help="Discover local demos, settle and process the discovered queue, then exit")
+    prepare = sub.add_parser("prepare-map", help="Preprocess installed map collision/navigation into versioned local assets")
+    prepare.add_argument("map_name", help="Map resource name, for example de_inferno")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     app = None
     try:
         settings = Settings.load(args.data_root, args.config, install_path=args.install_path, source2viewer=args.source2viewer, settle_seconds=args.settle_seconds)
         app = Application(settings)
+        if args.command == "prepare-map":
+            from .assets.geometry import GeometryService
+
+            geometry = GeometryService(settings.data_root, app.radar.install_path, settings.source2viewer)
+            result = geometry.prepare(args.map_name)
+            print(result.model_dump_json())
+            return 0
         if args.command == "serve":
             uvicorn.run(create_app(app), host="127.0.0.1", port=args.port, workers=1)
             return 0
